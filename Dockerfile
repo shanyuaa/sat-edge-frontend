@@ -10,7 +10,7 @@ FROM nginx:stable-alpine3.17
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN chown -R nginx:nginx /usr/share/nginx/html
+RUN chmod -R a+r /usr/share/nginx/html
 
 EXPOSE 80
 

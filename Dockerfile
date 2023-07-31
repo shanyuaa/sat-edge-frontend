@@ -12,6 +12,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 RUN chmod -R a+r /usr/share/nginx/html
 
+COPY default.conf /etc/nginx/conf.d/
+
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

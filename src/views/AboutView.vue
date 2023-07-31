@@ -5,23 +5,18 @@ export default {
       method: 'get',
       url: '/',
     })
-    .then(res => {                  /* res 是 response 的缩写 */
-      console.log(res.data)
-    })
-    .catch(err => {                 /* 请求若出现路由找不到等其它异常，则在终端输出错误信息 */
-      console.log(err);
-    })
+        .then(res => {                  /* res 是 response 的缩写 */
+          console.log(res.data)
+          this.tableData.push(res.data)
+        })
+        .catch(err => {                 /* 请求若出现路由找不到等其它异常，则在终端输出错误信息 */
+          console.log(err);
+        })
   },
-  methods:{
-    login: function(){
-      console.log('1')
-      this.show='4'
-    }
-  },
-  data(){
+  methods: {},
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      show:'',
+      tableData: []
     }
   }
 }
@@ -29,7 +24,11 @@ export default {
 
 <template>
   <div class="about">
-    <h1 @click="login">This is an about page</h1>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column prop="name" label="Name" width="180"/>
+      <el-table-column prop="age" label="Age" width="180"/>
+      <el-table-column prop="city" label="City"/>
+    </el-table>
   </div>
 </template>
 

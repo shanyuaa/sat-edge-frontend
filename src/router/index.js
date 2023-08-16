@@ -1,23 +1,55 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from '@/views/Home'
+import EdgeNode from '@/views/EdgeNode'
+import AddEdgeNode from '@/views/AddEdgeNode'
+import JobManagement from '@/views/JobManagement'
+import NodeInfo from '@/views/NodeInfo'
+import PodManagement from '@/views/PodManagement';
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+Vue.use(Router)
+
+export default new Router({
+  mode: 'history',
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'HelloWorld',
+    //   component: HelloWorld
+    // },
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path:'/',
+      redirect: '/home'
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
+      path: '/home',
+      name: 'home',
+      component: Home
+    },
+    {
+      path: '/node',
+      name: 'node',
+      component: EdgeNode
+    },
+    {
+      path: '/addnode',
+      name: 'addnode',
+      component: AddEdgeNode
+    },
+    {
+      path: '/job',
+      name: 'job',
+      component: JobManagement
+    },
+    {
+      path: '/pod',
+      name: 'pod',
+      component: PodManagement
+    },
+    {
+      path: '/nodeinfo',
+      name: 'nodeinfo',
+      component: NodeInfo
+    },
   ]
 })
-
-export default router

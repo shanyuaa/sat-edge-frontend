@@ -1,18 +1,26 @@
-import './assets/main.css'
-
-import {createApp} from 'vue'
-import App from './App.vue'
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import App from './App'
 import router from './router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+import * as echarts from 'echarts';
+import Plugin from 'v-fit-columns';
 
-const app = createApp(App)
+import "@/assets/css/global.css"
 
-app.use(ElementPlus)
-app.use(router)
-app.use(VueAxios, axios)
-app.mount('#app')
+Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts;
 
-axios.defaults.baseURL = 'http://k3s-sat.act.buaa.edu.cn/api'
+Vue.use(ElementUI);
+Vue.use(Plugin);
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  components: { App },
+  template: '<App/>',
+  render: h => h(App)
+})

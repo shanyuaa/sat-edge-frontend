@@ -1,7 +1,13 @@
 <template>
   <div>
     <el-container>
-            <el-header style="height: 60px; padding: 15px; width: 100%;">概览</el-header>
+      <div>
+        <el-header style="height: 60px; padding: 15px; width: 100%;">概览</el-header>
+      </div>
+      <div style="left: 85%;margin-top: 5px;">
+        <el-button icon="el-icon-switch-button" style="float: right;" type="text" @click="quit()"> 退出登录</el-button>
+      </div>
+           
     </el-container>
     <div class="interface">
       <el-card class="function-box" >
@@ -117,6 +123,13 @@ export default {
     }
   },
   methods:{
+    quit(){
+      sessionStorage.clear()
+      this.$parent.ifLogin=false
+      this.$router.push({
+          name:'login'
+      })
+    },
     drawChart_nodes(){
       let newPromise = new Promise((resolve) => {
           resolve()

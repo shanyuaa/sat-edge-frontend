@@ -114,7 +114,7 @@ export default {
           data:1
         },{
           name:"Job任务",
-          data:0
+          data:1
         },{
           name:"Pod对象",
           data:1

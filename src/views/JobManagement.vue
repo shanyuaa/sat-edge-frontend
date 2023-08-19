@@ -13,17 +13,14 @@
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <el-table-column prop="nodename" label="节点名称" width="150px">
+                        <el-table-column prop="jobname" label="Name" width="300px">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="gotoNode(tableData.nodename)">test1</el-button>
+                                <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="nodetype" label="节点类型" width="100px"></el-table-column>
-                        <el-table-column prop="status" label="节点状态" width="100px"></el-table-column>
-                        <el-table-column prop="clustertype" label="集群类型" width="100px"></el-table-column>
-                        <el-table-column prop="whichcluster" label="所属集群" width="140px"></el-table-column>
-                        <el-table-column prop="ip" label="IP" width="100px"></el-table-column>
-                        <el-table-column prop="birthtime" label="创建时间"  style="width: 100px;"></el-table-column>
+                        <el-table-column prop="completions" label="Completions" width="200px">{{ tableData[0].completions }}</el-table-column>
+                        <el-table-column prop="duration" label="Duration" width="100px">{{ tableData[0].duration }}</el-table-column>
+                        <el-table-column prop="age" label="Age"  style="width: 100px;">{{ tableData[0].age }}</el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
@@ -33,8 +30,8 @@
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>加入容器集群</el-dropdown-item>
-                                        <el-dropdown-item>修改配置</el-dropdown-item>
+                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
+                                        <el-dropdown-item>功能x</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </template>
@@ -61,11 +58,22 @@
 export default {
     data() {
         return{
-            
+            currentPage1:1,
+            tableData: [{
+                name:'myjob',
+                completions:'1/1',
+                duration:'4s',
+                age:'40s',
+                operation:''
+                }]
         }
     },
     methods:{
-        
+        gotoNode(nodename){
+            this.$router.push({
+                name:'nodeinfo'
+            })
+        }
     }
 }
 </script>

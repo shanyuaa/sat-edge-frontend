@@ -58,6 +58,7 @@
               <el-select v-model="select_node" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
                 <el-option label="CPU利用率" value="1"></el-option>
                 <el-option label="内存利用率" value="2"></el-option>
+                <el-option label="GPU利用率" value="3"></el-option>
               </el-select>
             </div>
             <div id="nodes_monitor" style="width: 400px; height: 250px"></div>

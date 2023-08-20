@@ -7,7 +7,6 @@ import App from './App'
 import router from './router'
 import * as echarts from 'echarts';
 import Plugin from 'v-fit-columns';
-
 import "@/assets/css/global.css"
 
 Vue.config.productionTip = false
@@ -17,6 +16,7 @@ Vue.use(ElementUI);
 Vue.use(Plugin);
 
 /* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,

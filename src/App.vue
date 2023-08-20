@@ -1,7 +1,7 @@
 <template>
   <div id="app" style="display: flex;">
     <!-- 侧边栏   -->
-      <Slidebar v-show="ifLogin"></Slidebar>
+      <Sidebar class="sidebar_container" v-show="ifLogin"></Sidebar>
       <div style="width: 100%">
         <!-- 头部 -->
         <!-- <Header></Header> -->
@@ -13,13 +13,15 @@
 
 <script>
 import Header from '@/views/layout/components/header'
-import {Slidebar} from './views/layout/components';
+import {Sidebar} from './views/layout/components';
+import PerfectScrollbar from 'perfect-scrollbar'
+import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 export default {
   name: 'App',
   components:{
     Header,
-    Slidebar
+    Sidebar
   },
   data(){
     return {
@@ -34,6 +36,11 @@ export default {
     },
     mounted() {
        this.makesureifLogin()
+       const container = document.querySelector('.scroll-container')
+       this.ps = new PerfectScrollbar(container)
+    },
+    beforeDestroy(){
+      this.ps.destroy()
     }
 }
 </script>
@@ -43,6 +50,15 @@ html, body , #app{
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+.sidebar_container{
+    transition: width 0.28s ease-in-out;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 

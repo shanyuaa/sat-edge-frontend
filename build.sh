@@ -8,7 +8,11 @@ sudo docker build -t fe:$version .
 
 sudo docker tag fe:$version harbor.act.buaa.edu.cn/sat-edge-manager/fe:$version
 
+sudo docker tag fe:$version harbor.act.buaa.edu.cn/sat-edge-manager/fe
+
 sudo docker push harbor.act.buaa.edu.cn/sat-edge-manager/fe:$version
+
+sudo docker push harbor.act.buaa.edu.cn/sat-edge-manager/fe
 
 echo $version > version
 

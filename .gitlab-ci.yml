@@ -1,0 +1,37 @@
+stages:
+  - build image
+  - deploy
+build:
+  image: docker
+  stage: build image
+  tags:
+    - openEuler
+  script:
+    - mkdir ~/.kube
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS harbor.act.buaa.edu.cn
+    - echo "$KUBE_CONFIG" > ~/.kube/config
+    - docker stop fe || true
+    - docker rm fe || true
+    - docker build -t fe:pipe-$CI_PIPELINE_ID .
+    - docker tag fe:pipe-$CI_PIPELINE_ID harbor.act.buaa.edu.cn/sat-edge-manager/fe:pipe-$CI_PIPELINE_ID
+    - docker tag fe:pipe-$CI_PIPELINE_ID harbor.act.buaa.edu.cn/sat-edge-manager/fe
+    - docker push harbor.act.buaa.edu.cn/sat-edge-manager/fe:pipe-$CI_PIPELINE_ID
+    - docker push harbor.act.buaa.edu.cn/sat-edge-manager/fe
+    - docker rmi fe:pipe-$CI_PIPELINE_ID
+    - docker rmi harbor.act.buaa.edu.cn/sat-edge-manager/fe:pipe-$CI_PIPELINE_ID
+    - docker rmi harbor.act.buaa.edu.cn/sat-edge-manager/fe
+
+
+deploy:
+  stage: deploy
+  tags:
+    - openEuler
+  script:
+    - >
+      docker run
+      --rm
+      -v /mnt/config:/home/kubectl/.kube/config
+      --privileged
+      rancher/kubectl:v1.24.16-arm64
+      patch deployment frontend-deployment
+      -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"build\":\"$CI_COMMIT_SHORT_SHA\"}}}}}" -n sat-edge

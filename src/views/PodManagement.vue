@@ -78,7 +78,11 @@ export default {
         }
     },
     methods:{
-        
+        toAddEdgeNode(){
+            this.$router.push({
+                name: 'addpod'
+            })
+        }
     }
 }
 </script>

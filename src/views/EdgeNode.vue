@@ -14,22 +14,25 @@
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <el-table-column prop="nodename" label="节点名称" width="150px">
+                        <el-table-column prop="name" label="节点名称" width="150px">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="gotoNode(tableData.nodename)">test1</el-button>
+                                <el-button size="mini" type="text" @click="gotoNode(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="nodetype" label="节点类型" width="100px"></el-table-column>
-                        <el-table-column prop="status" label="节点状态" width="100px"></el-table-column>
-                        <el-table-column prop="clustertype" label="集群类型" width="100px"></el-table-column>
-                        <el-table-column prop="whichcluster" label="所属集群" width="140px"></el-table-column>
-                        <el-table-column prop="ip" label="IP" width="100px"></el-table-column>
-                        <el-table-column prop="birthtime" label="创建时间"  style="width: 100px;"></el-table-column>
+                        <el-table-column prop="ip" label="IP" width="150px"></el-table-column>
+                        <el-table-column prop="create_time" label="创建时间"  style="width: 100px;"></el-table-column>
+                        <el-table-column prop="roles" label="节点类型" width="100px"></el-table-column>
+                        <el-table-column prop="cpu_cores" label="CPU核心数" width="100px"></el-table-column>
+                        <el-table-column prop="cpu_avaliable" label="CPU空闲数" width="100px"></el-table-column>
+                        <el-table-column prop="memory" label="内存" width="140px"></el-table-column>
+                        <el-table-column prop="memory_avaliable" label="可用内存" width="140px"></el-table-column>
+                        
+                        
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
                                 <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
+                                <!-- <el-dropdown style="font-size: smaller; left: 5px;">
                                     <span class="el-dropdown-link">
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
@@ -37,7 +40,7 @@
                                         <el-dropdown-item>加入容器集群</el-dropdown-item>
                                         <el-dropdown-item>修改配置</el-dropdown-item>
                                     </el-dropdown-menu>
-                                </el-dropdown>
+                                </el-dropdown> -->
                             </template>
                         </el-table-column>
                     </el-table>
@@ -64,15 +67,15 @@ export default {
         return{
             currentPage1:1,
             tableData: [{
-                nodename:'test1',
-                nodetype:'私有节点',
-                status:'-',
-                clustertype:'-',
-                whichcluster:'-',
-                ip:'-',
-                birthtime:'2023-07-24 15:30:15',
-                operation:''
-                }]
+                    // name:"",
+                    // ip:"",
+                    // create_time:"",
+                    // roles:["Worker"],
+                    // cpu_cores:12,
+                    // cpu_avaliable:12,
+                    // mem:"31322824",
+                    // mem_avaliable:"31322824"
+                },]
         }
     },
     methods:{
@@ -91,8 +94,18 @@ export default {
             this.$router.push({
                 name:'nodeinfo'
             })
+        },
+        getNodes(){
+            this.$http.get('/node/info').then(res => {
+                console.log(res.data.data.nodes)
+                this.tableData = res.data.data.nodes
+                console.log(this.tableData[0].name)
+            })
         }
-    }
+    },
+    mounted() {
+        this.getNodes();
+    },
 }
 </script>
 

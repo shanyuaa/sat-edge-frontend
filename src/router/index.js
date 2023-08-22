@@ -7,6 +7,7 @@ import JobManagement from '@/views/JobManagement'
 import NodeInfo from '@/views/NodeInfo'
 import PodManagement from '@/views/PodManagement'
 import Login from '@/views/Login'
+import AddPod from '@/views/AddPod'
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ const router = new Router({
       name: 'nodeinfo',
       component: NodeInfo
     },
+    {
+      path: '/addpod',
+      name: 'addpod',
+      component: AddPod
+    }
   ]
 })
 

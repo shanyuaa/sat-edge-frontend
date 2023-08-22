@@ -8,9 +8,13 @@ import router from './router'
 import * as echarts from 'echarts';
 import Plugin from 'v-fit-columns';
 import "@/assets/css/global.css"
+import axios from 'axios'
 
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts;
+
+axios.defaults.baseURL='http://k3s-sat.act.buaa.edu.cn/api'
+Vue.prototype.$http = axios
 
 Vue.use(ElementUI);
 Vue.use(Plugin);

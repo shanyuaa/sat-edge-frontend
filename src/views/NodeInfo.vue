@@ -35,12 +35,13 @@
             <el-card class="NodeInfoCard2">
                 <template>
                     <el-tabs v-model="activeName" @tab-click="handleClick">
-                        <el-tab-pane label="任务" name="first">任务</el-tab-pane>
+                        <el-tab-pane label="任务" name="first">{{ this.CpuSeconds }}</el-tab-pane>
                         <el-tab-pane label="监控" name="second">
                             <div style="margin-top: 5px;">
                                 <el-select v-model="select_node" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
                                     <el-option label="CPU利用率" value="1"></el-option>
                                     <el-option label="内存利用率" value="2"></el-option>
+                                    <el-option label="GPU利用率" value="3"></el-option>
                                 </el-select>
                             </div>
                             <div id="nodeinfo_monitor" style="width: 1200px; height: 300px"></div>
@@ -71,10 +72,20 @@ export default {
                 type: [],
                 resource: '',
                 desc: ''
+            },
+            CpuSeconds:{
+
             }
         }
     },
     methods:{
+        getCpuSeconds(){
+            this.$http.get('http://192.168.13.134:30389/api/v1/query?query=node_cpu_seconds_total{node=%22k3s-master%22,mode!=%22idle%22}').then(res => {
+                console.log(res)
+                this.CpuSeconds = res.data.data.result
+                console.log(this.CpuSeconds)
+            })
+        },
         goBack(){
             this.$router.push({
                 name:'node'
@@ -130,6 +141,7 @@ export default {
     },
     mounted() {
         this.drawChart_nodes();
+        this.getCpuSeconds();
     }
 }
 </script>

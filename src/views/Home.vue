@@ -64,14 +64,10 @@
             <div id="nodes_monitor" style="width: 400px; height: 250px"></div>
           </el-card>
           <el-card>
-            <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-              <span style="margin-left: -30px;">系统平均负载监控</span>
-              <!-- <el-select v-model="select_app" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
-                <el-option label="节点1" value="1"></el-option>
-                <el-option label="节点2" value="2"></el-option>
-              </el-select> -->
-            </div>
-            <div id="apps_monitor" style="width: 400px; height: 250px">
+            <!-- <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+              <span style="margin-left: -30px;">GPU负载百分比</span>
+            </div> -->
+            <div id="apps_monitor" style="width: 400px; height: 250px; margin-top: 40px;">
               
             </div>
           </el-card>
@@ -180,52 +176,115 @@ export default {
          // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
         let myChart = this.$echarts.init(document.getElementById("apps_monitor"));
         // 指定图表的配置项和数据
+        // let option = {
+        //   // title: {
+        //   //   text: "ECharts test",
+        //   // },
+        //   tooltip: {},
+        //   // legend: {
+        //   //   data: ["销量"],
+        //   // },
+        //   xAxis: {
+        //     name:'时间',
+        //     data: ["17:20", "17:25", "17:30", "17:35", "17:40"],
+        //   },
+        //   yAxis: [
+        //     {
+        //       name:'平均负载',
+        //       position: 'left',
+        //       min:0,
+        //       max:2
+        //     }
+        //     // {
+        //     //   name:'内存使用量',
+        //     //   position: 'right',
+        //     //   min:0,
+        //     //   max:16
+        //     // }
+        //   ],
+        //   series: [
+        //     {
+        //       name: "节点1",
+        //       type: "line",
+        //       // yAxisIndex: 0,
+        //       data: [0.4, 1, 1.2, 1.6, 2],
+        //     },
+        //     {
+        //       name: "节点2",
+        //       type:"line",
+        //       // yAxisIndex: 1,
+        //       data: [1,0.5,0.8,1.3,1.5]
+        //     }
+        //   ],
+        // };
         let option = {
-          // title: {
-          //   text: "ECharts test",
-          // },
-          tooltip: {},
-          // legend: {
-          //   data: ["销量"],
-          // },
-          xAxis: {
-            name:'时间',
-            data: ["17:20", "17:25", "17:30", "17:35", "17:40"],
+          title: {
+            text: "GPU负载百分比",
+            left: 'center',
+            top: '-5px'
           },
-          yAxis: [
-            {
-              name:'平均负载',
-              position: 'left',
-              min:0,
-              max:2
-            }
-            // {
-            //   name:'内存使用量',
-            //   position: 'right',
-            //   min:0,
-            //   max:16
-            // }
-          ],
           series: [
             {
-              name: "节点1",
-              type: "line",
-              // yAxisIndex: 0,
-              data: [0.4, 1, 1.2, 1.6, 2],
-            },
-            {
-              name: "节点2",
-              type:"line",
-              // yAxisIndex: 1,
-              data: [1,0.5,0.8,1.3,1.5]
+              type: 'gauge',
+              progress: {
+                show: true,
+                width: 10
+              },
+              axisLine: {
+                lineStyle: {
+                  width: 10
+                }
+              },
+              axisTick: {
+                show: false
+              },
+              splitLine: {
+                length: 10,
+                lineStyle: {
+                  width: 2,
+                  color: '#999'
+                }
+              },
+              axisLabel: {
+                distance: 15,
+                color: '#999',
+                fontSize: 10
+              },
+              anchor: {
+                show: true,
+                showAbove: true,
+                size: 10,
+                itemStyle: {
+                  borderWidth: 10
+                }
+              },
+              title: {
+                show: true
+              },
+              detail: {
+                valueAnimation: true,
+                fontSize: 20,
+                offsetCenter: [0, '70%']
+              },
+              data: [
+                {
+                  value: 70
+                }
+              ]
             }
-          ],
-        };
+          ]
+        }
         myChart.setOption(option);
+      })
+    },
+    getGpuLoad(){
+      this.$http.get('http://192.168.1.241:8000/data').then(res => {
+        console.log(res)
       })
     }
   },
   mounted() {
+    this.getGpuLoad();
     this.drawChart_nodes();
     this.drawChart_apps();
   },

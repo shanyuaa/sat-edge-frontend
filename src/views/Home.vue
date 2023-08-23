@@ -70,7 +70,7 @@
             </div>
           </el-card>
           <el-card style="margin: 20px;">
-            <div id="GPU_temperature" style="width: 380px; height: 250px; margin-top: 40px;">
+            <div id="GPU_temperature_chart" style="width: 380px; height: 250px; margin-top: 40px;">
             </div>
           </el-card>
           <el-card style="margin: 20px;">
@@ -283,7 +283,8 @@ export default {
           title: {
             text: "GPU负载百分比",
             left: 'center',
-            top: '-5px'
+            top: '-5px',
+            bottom: '10px'
           },
           series: [
             {
@@ -345,7 +346,7 @@ export default {
         })
       newPromise.then(() => {
          // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
-        let myChart = this.$echarts.init(document.getElementById("GPU_temperature"));
+        let myChart = this.$echarts.init(document.getElementById("GPU_temperature_chart"));
         let option = {
           title: {
             text: "GPU温度",
@@ -419,15 +420,30 @@ export default {
                   value: this.GPU_temperature
                 }
               ]
-            }
+            },
           ]
-        }
-        myChart.setOption(option);
+        };
+        // setInterval(function () {
+        //   this.getGpuTemperature;
+
+        //   myChart.setOption({
+        //     series: [
+        //       {
+        //         data: [
+        //           {
+        //             value: this.GPU_temperature
+        //           }
+        //         ]
+        //       }
+        //     ]
+        //   });
+        // }, 2000);
+        option && myChart.setOption(option);
       })
     },
-    getGpuLoad(){
+    getGpuInfo(){
       this.GPU_data = [];
-      this.$http.get('http://192.168.1.241:8000/data').then(res => {
+      this.$http.get('http://192.168.1.241:32335/data').then(res => {
         console.log(res.data.gpu_load)
         this.GPU_load = res.data.gpu_load
         this.GPU_temperature = res.data.gpu_temperature
@@ -468,10 +484,24 @@ export default {
         }
         console.log(this.GPU_data)
       })
+    },
+    getGpuTemperature(){
+      console.log('进来了')
+      this.$http.get('http://192.168.1.241:32335/data').then(res =>{
+        this.GPU_temperature = res.data.gpu_temperature
+        console.log(this.GPU_temperature)
+      })
+    },
+    getGpuLoad(){
+      console.log('进来了')
+      this.$http.get('http://192.168.1.241:32335/data').then(res =>{
+        this.GPU_load = res.data.gpu_load
+        console.log(this.GPU_load)
+      })
     }
   },
   mounted() {
-    this.getGpuLoad();
+    this.getGpuInfo();
     console.log(this.GPU_load+'   1')
     setTimeout(() =>{
       console.log(this.GPU_load+'   2')
@@ -479,7 +509,28 @@ export default {
         this.drawChart_apps();
         this.drawChart_temperature()
       },1000);
+    this.timer_temperature = setInterval(this.getGpuTemperature, 2000);
+    this.timer_load = setInterval(this.getGpuLoad, 2000);
+      
   },
+  watch:{
+      GPU_temperature:{
+        handler(newVal){
+          console.log(newVal);
+          //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
+          // console.log(this.edgeStatus[2])
+          this.drawChart_temperature()
+        },
+      },
+      GPU_load:{
+        handler(newVal){
+          console.log(newVal);
+          //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
+          // console.log(this.edgeStatus[2])
+          this.drawChart_apps()
+        },
+      }
+    },
 }
 </script>
 

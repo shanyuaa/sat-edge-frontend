@@ -19,9 +19,9 @@
                     <el-form-item label="任务名称">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="命名空间">
+                    <!-- <el-form-item label="命名空间">
                         <el-input v-model="form.namespace"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <!-- <el-form-item label="标签">
                         <el-input v-model="form.labels"></el-input>
                     </el-form-item> -->

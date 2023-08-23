@@ -207,7 +207,7 @@ export default {
           // },
           xAxis: {
             name:'节点',
-            data: ["1", "2", "3", "4", "5"],
+            data: ["1", "2", "3", "4"],
           },
           yAxis: [{
             name:'利用率',
@@ -218,12 +218,12 @@ export default {
             {
               name: "CPU利用率",
               type: "bar",
-              data: [5, 20, 36, 10, 10, 20],
+              data: [5, 20, 36, 10, 10],
             },
             {
               name: "内存利用率",
               type: "line",
-              data: [20,34,47,14,24]
+              data: [20,34,47,14]
             }
           ]
         };

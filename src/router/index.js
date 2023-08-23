@@ -8,6 +8,8 @@ import NodeInfo from '@/views/NodeInfo'
 import PodManagement from '@/views/PodManagement'
 import Login from '@/views/Login'
 import AddPod from '@/views/AddPod'
+import DeploymentManagement from '@/views/DeploymentManagement'
+import AddDeployment from '@/views/AddDeployment'
 
 Vue.use(Router)
 
@@ -61,6 +63,16 @@ const router = new Router({
       path: '/addpod',
       name: 'addpod',
       component: AddPod
+    },
+    {
+      path: '/deployment',
+      name: 'deployment',
+      component: DeploymentManagement
+    },
+    {
+      path: '/adddeployment',
+      name: 'adddeployment',
+      component: AddDeployment
     }
   ]
 })

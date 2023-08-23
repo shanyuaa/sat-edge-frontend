@@ -26,7 +26,7 @@
 
           <el-submenu index="application">
             <span slot="title">应用管理</span>
-            <el-menu-item index="Deployment-management" @click="">在线任务</el-menu-item>
+            <el-menu-item index="Deployment-management" @click="gotoDeploymentManagement">在线任务</el-menu-item>
             <el-menu-item index="Job-management" @click="gotoJobManagement">离线任务</el-menu-item>
           </el-submenu>
 
@@ -77,6 +77,11 @@ export default {
                 name:'pod'
             })
         },
+        gotoDeploymentManagement(){
+          this.$router.push({
+            name:'deployment'
+          })
+        }
         // verifyLogin(){
         //   var this_route = this.$router.options.base
         //   console.log(this_route)

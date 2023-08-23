@@ -1,12 +1,12 @@
 <template>
     <div>
         <el-container>
-            <el-header style="height: 60px; padding: 15px; width: 100%;">Pod任务管理</el-header>
+            <el-header style="height: 60px; padding: 15px; width: 100%;">在线任务管理（Deployment）</el-header>
         </el-container>
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建任务</el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeDeployment">创建任务</el-button>
                     <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input>
@@ -18,25 +18,15 @@
                                 <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template>
                             </el-table-column>
-                        <el-table-column prop="namespace" label="Namespace" width="150px">
-                            <!-- <template slot-scope="scope">
-                                <el-button size="medium" type="text">{{ scope.row.namespace }}</el-button>
-                            </template> -->
-                        </el-table-column>
-                        <el-table-column prop="labels" label="labels" width="100px"></el-table-column>
-                        <el-table-column prop="status" label="Status" width="100px">
-                            <template slot-scope="scope">
-                                <el-tag
-                                :type="scope.row.status === 'Running' ? 'primary' : 'danger'"
-                                disable-transitions>{{scope.row.status}}</el-tag>
-                            </template>
-                        </el-table-column>
+                        <el-table-column prop="replicas" label="副本数" width="100px"></el-table-column>
+                        
                         <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
                         <el-table-column prop="image_url" label="镜像url"  style="width: 200px;"></el-table-column>
                         <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="deletePod(scope.row.name)">删除</el-button>
+                                <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
+                                <el-button size="mini" type="text" @click="deleteDeployment(scope.row.name)">删除</el-button>
                                 <el-dropdown style="font-size: smaller; left: 5px;">
                                     <span class="el-dropdown-link">
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
@@ -71,6 +61,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     data() {
         return{
             EditCard:false,
@@ -82,27 +73,27 @@ export default {
         }
     },
     methods:{
-        toAddEdgeNode(){
+        toAddEdgeDeployment(){
             this.$router.push({
-                name: 'addpod'
+                name: 'adddeployment'
             })
         },
-        getAllPods(){
-            this.$http.post('/pod/info').then(res =>{
+        getAllDeployments(){
+            this.$http.post('/deployment/info').then(res =>{
                 console.log(res)
-                this.tableData = res.data.data.pods
-                console.log(this.tableData)
+                this.tableData = res.data.data.deployments
+                // console.log(this.tableData)
             })
         },
         showEditCard(){
             this.EditCard = true
         },
-        deletePod(name){
+        deleteDeployment(name){
             console.log(name)
             let obj = {"name":name}
-            this.$http.post('/pod/delete', obj).then(res =>{
+            this.$http.post('/deployment/delete', obj).then(res =>{
                 console.log(res)
-                if(res.data.status === 0){
+                if(res.data.status == 0){
                     this.$message.success('删除成功')
                     location.reload()
                 }
@@ -110,7 +101,7 @@ export default {
         }
     },
     mounted(){
-        this.getAllPods()
+        this.getAllDeployments()
     }
 }
 </script>

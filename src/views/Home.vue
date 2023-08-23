@@ -443,7 +443,7 @@ export default {
     },
     getGpuInfo(){
       this.GPU_data = [];
-      this.$http.get('http://192.168.1.241:32335/data').then(res => {
+      this.$http.get('http://192.168.1.241:8000/data').then(res => {
         console.log(res.data.gpu_load)
         this.GPU_load = res.data.gpu_load
         this.GPU_temperature = res.data.gpu_temperature
@@ -487,14 +487,14 @@ export default {
     },
     getGpuTemperature(){
       console.log('进来了')
-      this.$http.get('http://192.168.1.241:32335/data').then(res =>{
+      this.$http.get('http://192.168.1.241:8000/data').then(res =>{
         this.GPU_temperature = res.data.gpu_temperature
         console.log(this.GPU_temperature)
       })
     },
     getGpuLoad(){
       console.log('进来了')
-      this.$http.get('http://192.168.1.241:32335/data').then(res =>{
+      this.$http.get('http://192.168.1.241:8000/data').then(res =>{
         this.GPU_load = res.data.gpu_load
         console.log(this.GPU_load)
       })

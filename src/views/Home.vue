@@ -51,9 +51,11 @@
         <div style="left: 10px;">
           <span>监控</span>
         </div>
-        <div style="display: flex; justify-content:space-around; margin-top: 20px;">
-          <el-card>
-            <div style="display: flex; justify-content: space-around; margin-top: 20px;" >
+        
+          <div :gutter="20" style="display: flex; flex-wrap:wrap; margin-top: 20px; margin-left: 50px;" >
+         
+            <el-card style="margin: 20px;">
+            <div style="display: flex; justify-content: space-around;  margin-top: 20px; " >
               <span style="margin-left: -30px;">节点资源监控Top5</span>
               <el-select v-model="select_node" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
                 <el-option label="CPU利用率" value="1"></el-option>
@@ -61,16 +63,63 @@
                 <el-option label="GPU利用率" value="3"></el-option>
               </el-select>
             </div>
-            <div id="nodes_monitor" style="width: 400px; height: 250px"></div>
+            <div id="nodes_monitor" style="width: 380px; height: 250px"></div>
           </el-card>
-          <el-card>
-            <!-- <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-              <span style="margin-left: -30px;">GPU负载百分比</span>
-            </div> -->
-            <div id="apps_monitor" style="width: 400px; height: 250px; margin-top: 40px;">
-              
+          <el-card style="margin: 20px;">
+            <div id="apps_monitor" style="width: 380px; height: 250px; margin-top: 40px; left: -10px;">
             </div>
           </el-card>
+          <el-card style="margin: 20px;">
+            <div id="GPU_temperature" style="width: 380px; height: 250px; margin-top: 40px;">
+            </div>
+          </el-card>
+          <el-card style="margin: 20px;">
+            <div style="width: 550px; height: 250px; margin-top: 40px;">
+              <el-descriptions title="其他信息">
+                <el-descriptions-item label="gpu缩放状态">
+                  <el-tag style="size:smaller"
+                    :type="  gpu_3d_scaling_status   === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_3d_scaling_status }}</el-tag>
+                  </el-descriptions-item>
+                <el-descriptions-item label="当前频率"> {{ gpu_frequency_current }}</el-descriptions-item>
+                <el-descriptions-item label="电源控制状态">{{ gpu_power_control_status }}</el-descriptions-item>
+                <el-descriptions-item label="railgate状态">
+                  <!-- <el-tag size="small">学校</el-tag> -->
+                  <el-tag style="size:smaller"
+                    :type=" gpu_railgate_status  === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_railgate_status }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="tpc pg mask状态">
+                  <el-tag style="size:smaller"
+                    :type=" gpu_tpc_pg_mask_statu  === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_tpc_pg_mask_status }}</el-tag>
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
+            
+          </el-card>
+        
+        </div>
+        
+      </el-card>
+
+      <el-card class="gpu_list">
+        <div style="left: 10px;">
+          <span>GPU进程列表</span>
+        </div>
+        <div style="display: flex; justify-content:space-around; margin-top: 20px;">
+          <el-table :data="GPU_data" stripe style="width: 100%">
+              <el-table-column prop="PID" label="PID" width="150px"></el-table-column>
+              <el-table-column prop="Name" label="名称" width="150px"></el-table-column>
+              <el-table-column prop="Class" label="class"  style="width: 100px;"></el-table-column>
+              <el-table-column prop="Status" label="状态" width="100px"></el-table-column>
+              <el-table-column prop="Type" label="种类" width="100px"></el-table-column>
+              <el-table-column prop="User" label="用户" width="100px"></el-table-column>
+              <el-table-column prop="GPUUsage" label="GPU利用率" width="100px"></el-table-column>
+              <el-table-column prop="Memory" label="内存" width="140px"></el-table-column>
+              <el-table-column prop="ResidentMemory" label="可用内存" width="140px"></el-table-column>
+              <el-table-column prop="Priority" label="优先级" width="140px"></el-table-column>
+          </el-table>
         </div>
       </el-card>
 
@@ -89,7 +138,6 @@ export default {
         {
           name:"节点管理",
           src: require('../assets/addedge.png')
-          // src: 'https://ecloud.10086.cn/api/page/edge/img/edgeService.4d1bc8cb.svg'
         },
         // {
         //   name:"注册边缘设备",
@@ -116,7 +164,18 @@ export default {
           name:"Pod对象",
           data:1
         }
-      ]
+      ],
+      GPU_load:'',
+      GPU_temperature:'',
+      GPU_data:[
+        
+        
+      ],
+      gpu_3d_scaling_status:'',
+      gpu_frequency_current:'',
+      gpu_power_control_status:'',
+      gpu_railgate_status:'',
+      gpu_tpc_pg_mask_status:''
     }
   },
   methods:{
@@ -140,6 +199,9 @@ export default {
           //   text: "ECharts test",
           // },
           tooltip: {},
+          // grid:{
+          //   left: '0px',
+          // },
           // legend: {
           //   data: ["销量"],
           // },
@@ -163,7 +225,7 @@ export default {
               type: "line",
               data: [20,34,47,14,24]
             }
-          ],
+          ]
         };
         myChart.setOption(option);
       })
@@ -268,7 +330,93 @@ export default {
               },
               data: [
                 {
-                  value: 70
+                  value: this.GPU_load
+                }
+              ]
+            }
+          ]
+        }
+        myChart.setOption(option);
+      })
+    },
+    drawChart_temperature(){
+      let newPromise = new Promise((resolve) => {
+          resolve()
+        })
+      newPromise.then(() => {
+         // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+        let myChart = this.$echarts.init(document.getElementById("GPU_temperature"));
+        let option = {
+          title: {
+            text: "GPU温度",
+            left: 'center',
+            top: '-5px'
+          },
+          series: [
+            {
+              type: 'gauge',
+              center: ['50%', '60%'],
+              startAngle: 200,
+              endAngle: -20,
+              min: 0,
+              max: 60,
+              splitNumber: 12,
+              itemStyle: {
+                color: '#FFAB91'
+              },
+              progress: {
+                show: true,
+                width: 30
+              },
+              pointer: {
+                show: false
+              },
+              axisLine: {
+                lineStyle: {
+                  width: 30
+                }
+              },
+              axisTick: {
+                distance: -45,
+                splitNumber: 5,
+                lineStyle: {
+                  width: 2,
+                  color: '#999'
+                }
+              },
+              splitLine: {
+                distance: -52,
+                length: 14,
+                lineStyle: {
+                  width: 3,
+                  color: '#999'
+                }
+              },
+              axisLabel: {
+                distance: 5,
+                color: '#999',
+                fontSize: 10
+              },
+              anchor: {
+                show: false
+              },
+              title: {
+                show: false
+              },
+              detail: {
+                valueAnimation: true,
+                width: '60%',
+                lineHeight: 40,
+                borderRadius: 8,
+                offsetCenter: [0, '-15%'],
+                fontSize: 20,
+                fontWeight: 'bolder',
+                formatter: '{value} °C',
+                color: 'inherit'
+              },
+              data: [
+                {
+                  value: this.GPU_temperature
                 }
               ]
             }
@@ -278,15 +426,59 @@ export default {
       })
     },
     getGpuLoad(){
+      this.GPU_data = [];
       this.$http.get('http://192.168.1.241:8000/data').then(res => {
-        console.log(res)
+        console.log(res.data.gpu_load)
+        this.GPU_load = res.data.gpu_load
+        this.GPU_temperature = res.data.gpu_temperature
+        if(res.data.gpu_3d_scaling_status == 1){
+          this.gpu_3d_scaling_status = '开启'
+        }else{
+          this.gpu_3d_scaling_status = '关闭'
+        }
+        this.gpu_frequency_current = res.data.gpu_frequency_current
+        this.gpu_power_control_status = res.data.gpu_power_control_status
+        if(res.data.gpu_railgate_status == 1){
+          this.gpu_railgate_status = '开启'
+        }else if(res.data.gpu_railgate_status == 0){
+          this.gpu_railgate_status = '关闭'
+        }else{
+          this.gpu_railgate_status = '未知'
+        }
+        if(res.data.gpu_tpc_pg_mask_status == 1){
+          this.gpu_tpc_pg_mask_status = '开启'
+        }else{
+          this.gpu_tpc_pg_mask_status = '关闭'
+        }
+        
+        // console.log(this.GPU_data[0].PID+'hhh')
+        for(var i=0 ; i<res.data.gpu_processes.length;i++){
+          this.GPU_data.push({
+            PID:res.data.gpu_processes[i][0],
+            User:res.data.gpu_processes[i][1],
+            Class:res.data.gpu_processes[i][2],
+            Type:res.data.gpu_processes[i][3],
+            Priority:res.data.gpu_processes[i][4],
+            Status:res.data.gpu_processes[i][5],
+            GPUUsage:res.data.gpu_processes[i][6],
+            Memory:res.data.gpu_processes[i][7],
+            ResidentMemory:res.data.gpu_processes[i][8],
+            Name:res.data.gpu_processes[i][9]
+          })
+        }
+        console.log(this.GPU_data)
       })
     }
   },
   mounted() {
     this.getGpuLoad();
-    this.drawChart_nodes();
-    this.drawChart_apps();
+    console.log(this.GPU_load+'   1')
+    setTimeout(() =>{
+      console.log(this.GPU_load+'   2')
+        this.drawChart_nodes();
+        this.drawChart_apps();
+        this.drawChart_temperature()
+      },1000);
   },
 }
 </script>
@@ -335,6 +527,16 @@ export default {
 }
 
 .resource-monitor{
+  position: relative;
+  width: 96%;
+  padding: 0px;
+  margin-top:50px;
+  bottom: 20px;
+  left:2%;
+  right: 2%;
+}
+
+.gpu_list{
   position: relative;
   width: 96%;
   padding: 0px;

@@ -62,6 +62,10 @@
                     </el-pagination>
                 </div>
             </el-card>
+
+            <el-card v-show="EditCard" shadow="hover">
+                11
+            </el-card>
         </div>
     </div>
 </template>
@@ -70,6 +74,7 @@
 export default {
     data() {
         return{
+            EditCard:false,
             currentPage1:1,
             tableData: [{
                 // namespace:'',
@@ -95,6 +100,9 @@ export default {
                 this.tableData = res.data.data.pods
                 console.log(this.tableData)
             })
+        },
+        showEditCard(){
+            this.EditCard = true
         }
     },
     mounted(){

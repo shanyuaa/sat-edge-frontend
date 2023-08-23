@@ -13,13 +13,17 @@
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%;">
-                        <el-table-column prop="podname" label="Namespace" width="150px">
-                            <template slot-scope="scope">
-                                <el-button size="medium" type="text" @click="gotoPod(tableData[0].namespace)">{{ tableData[0].namespace }}</el-button>
+                        <el-table-column prop="name" label="名称" width="200px" >
+                            <template slot-scope="scope" >
+                                <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template>
+                            </el-table-column>
+                        <el-table-column prop="namespace" label="Namespace" width="150px">
+                            <!-- <template slot-scope="scope">
+                                <el-button size="medium" type="text">{{ scope.row.namespace }}</el-button>
+                            </template> -->
                         </el-table-column>
-                        <el-table-column prop="name" label="Name" width="200px"></el-table-column>
-                        <el-table-column prop="ready" label="Ready" width="200px"></el-table-column>
+                        <el-table-column prop="labels" label="labels" width="100px"></el-table-column>
                         <el-table-column prop="status" label="Status" width="100px">
                             <template slot-scope="scope">
                                 <el-tag
@@ -27,8 +31,9 @@
                                 disable-transitions>{{scope.row.status}}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="restarts" label="Restarts"  style="width: 200px;"></el-table-column>
-                        <el-table-column prop="age" label="Age"  style="width: 200px;"></el-table-column>
+                        <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
+                        <el-table-column prop="image_url" label="镜像url"  style="width: 200px;"></el-table-column>
+                        <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
@@ -67,14 +72,15 @@ export default {
         return{
             currentPage1:1,
             tableData: [{
-                namespace:'kube-system',
-                name:'kube-apiserver-master',
-                ready:'1/1',
-                status:'Running',
-                restarts:'0',
-                age:'5h45m',
-                operation:''
-                }]
+                // namespace:'',
+                // name:'',
+                // labels:'',
+                // status:'',
+                // image_name:'',
+                // image_url:'',
+                // log:''
+                },
+            ]
         }
     },
     methods:{
@@ -82,7 +88,17 @@ export default {
             this.$router.push({
                 name: 'addpod'
             })
+        },
+        getAllPods(){
+            this.$http.post('/pod/info').then(res =>{
+                console.log(res)
+                this.tableData = res.data.data.pods
+                console.log(this.tableData)
+            })
         }
+    },
+    mounted(){
+        this.getAllPods()
     }
 }
 </script>

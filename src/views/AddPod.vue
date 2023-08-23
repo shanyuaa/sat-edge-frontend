@@ -16,23 +16,23 @@
         <div class="interface">
             <el-card class="add-node">
                 <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="命名空间">
-                        <el-input v-model="form.namespace"></el-input>
-                    </el-form-item>
                     <el-form-item label="任务名称">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="容器名称">
-                        <el-input v-model="form.container"></el-input>
+                    <el-form-item label="命名空间">
+                        <el-input v-model="form.namespace"></el-input>
                     </el-form-item>
-                    <el-form-item label="端口号">
-                        <el-input v-model="form.port"></el-input>
-                    </el-form-item>
+                    <!-- <el-form-item label="标签">
+                        <el-input v-model="form.labels"></el-input>
+                    </el-form-item> -->
                     <el-form-item label="镜像">
-                        <el-input v-model="form.image"></el-input>
+                        <el-input v-model="form.image_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="镜像url">
+                        <el-input v-model="form.image_url"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                        <el-button type="primary" @click="SubmitCreatePod(form)">立即创建</el-button>
                         <el-button>取消</el-button>
                     </el-form-item>
                 </el-form>
@@ -48,9 +48,9 @@ export default {
             form: {
                 name: '',
                 namespace: '',
-                container: '',
-                port: '',
-                image: ''
+                labels:{},
+                image_name:'',
+                image_url: '',
             }
         }
     },
@@ -58,6 +58,32 @@ export default {
         goBack(){
             this.$router.push({
                 name:'pod'
+            })
+        },
+        SubmitCreatePod(form){
+            var JsonData = JSON.stringify(form)
+            console.log(JsonData)
+            this.$http.post('/pod/create', form).then(res =>{
+                console.log(res)
+                if(res.data.status == '0'){
+                    this.$message.success('添加成功')
+                    this.form.name = '';
+                    this.form.namespace = ''
+                    this.form.labels = {}
+                    this.form.image_name = ''
+                    this.form.image_url = ''
+                    this.$router.push({
+                        name:'PodManagement'
+                    })
+                }else if(res.data.status == '1'){
+                    this.$message.error('添加失败')
+                    this.form.name = '';
+                    this.form.namespace = ''
+                    this.form.labels = {}
+                    this.form.image_name = ''
+                    this.form.image_url = ''
+                }
+                
             })
         }
         

@@ -7,7 +7,7 @@
       <div style="left: 85%;margin-top: 5px;">
         <el-button icon="el-icon-switch-button" style="float: right;" type="text" @click="quit()"> 退出登录</el-button>
       </div>
-           
+
     </el-container>
     <div class="interface">
       <el-card class="function-box" >
@@ -27,7 +27,7 @@
           </el-card>
         </div>
       </el-card>
-      
+
       <el-card class="resource-overview" >
         <div class="clearfix">
           <span>资源总览</span>
@@ -51,9 +51,9 @@
         <div style="left: 10px;">
           <span>监控</span>
         </div>
-        
+
           <div :gutter="20" style="display: flex; flex-wrap:wrap; margin-top: 20px; margin-left: 50px;" >
-         
+
             <!-- <el-card style="margin: 20px;">
             <div style="display: flex; justify-content: space-around;  margin-top: 20px; " >
               <span style="margin-left: -30px;">节点资源监控Top5</span>
@@ -96,11 +96,11 @@
                 </el-descriptions-item>
               </el-descriptions>
             </div>
-            
+
           </el-card>
-        
+
         </div>
-        
+
       </el-card>
 
       <el-card class="gpu_list">
@@ -156,20 +156,20 @@ export default {
       ],
       resource_overview_list:[{
           name:"边缘节点",
-          data:1
+          data:4
         },{
           name:"Job任务",
           data:1
         },{
           name:"Pod对象",
-          data:1
+          data:5
         }
       ],
       GPU_load:'',
       GPU_temperature:'',
       GPU_data:[
-        
-        
+
+
       ],
       gpu_3d_scaling_status:'',
       gpu_frequency_current:'',
@@ -466,7 +466,7 @@ export default {
         }else{
           this.gpu_tpc_pg_mask_status = '关闭'
         }
-        
+
         // console.log(this.GPU_data[0].PID+'hhh')
         for(var i=0 ; i<res.data.gpu_processes.length;i++){
           this.GPU_data.push({
@@ -511,7 +511,7 @@ export default {
       },1000);
     this.timer_temperature = setInterval(this.getGpuTemperature, 2000);
     this.timer_load = setInterval(this.getGpuLoad, 2000);
-      
+
   },
   watch:{
       GPU_temperature:{

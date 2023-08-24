@@ -7,8 +7,8 @@
                 </div>
                 <div style="margin-top: 10px; margin-left: 20px;">
                     <el-breadcrumb separator-class="el-icon-arrow-right">
-                        <el-breadcrumb-item :to="{ path: '/pod' }">Pod任务管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>创建Pod任务</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/pod' }">Pod容器管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>创建Pod容器</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
             </el-header>

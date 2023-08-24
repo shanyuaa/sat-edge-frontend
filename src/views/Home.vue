@@ -54,7 +54,7 @@
         
           <div :gutter="20" style="display: flex; flex-wrap:wrap; margin-top: 20px; margin-left: 50px;" >
          
-            <el-card style="margin: 20px;">
+            <!-- <el-card style="margin: 20px;">
             <div style="display: flex; justify-content: space-around;  margin-top: 20px; " >
               <span style="margin-left: -30px;">节点资源监控Top5</span>
               <el-select v-model="select_node" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
@@ -64,7 +64,7 @@
               </el-select>
             </div>
             <div id="nodes_monitor" style="width: 380px; height: 250px"></div>
-          </el-card>
+          </el-card> -->
           <el-card style="margin: 20px;">
             <div id="apps_monitor" style="width: 380px; height: 250px; margin-top: 40px; left: -10px;">
             </div>
@@ -505,7 +505,7 @@ export default {
     console.log(this.GPU_load+'   1')
     setTimeout(() =>{
       console.log(this.GPU_load+'   2')
-        this.drawChart_nodes();
+        // this.drawChart_nodes();
         this.drawChart_apps();
         this.drawChart_temperature()
       },1000);

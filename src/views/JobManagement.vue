@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-container>
-            <el-header style="height: 60px; padding: 15px; width: 100%;">Job任务管理</el-header>
+            <el-header style="height: 60px; padding: 15px; width: 100%;">离线任务管理(Job)</el-header>
         </el-container>
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">

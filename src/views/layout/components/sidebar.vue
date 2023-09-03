@@ -30,15 +30,15 @@
             <el-menu-item index="Job-management" @click="gotoJobManagement">离线任务</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="image">
+          <el-menu-item index="image"  @click="gotoImageManagement">
             <span slot="title">镜像管理</span>
           </el-menu-item>
 
-          <el-menu-item index="user">
+          <el-menu-item index="user" @click="gotoUserManagement">
             <span slot="title">用户管理</span>
           </el-menu-item>
 
-          <el-menu-item index="logs">
+          <el-menu-item index="logs" @click="gotoLogManagement">
             <span slot="title">日志管理</span>
           </el-menu-item>
         </el-scrollbar>
@@ -81,11 +81,23 @@ export default {
           this.$router.push({
             name:'deployment'
           })
+        },
+        gotoImageManagement(){
+          this.$router.push({
+            name: 'image'
+          })
+        },
+        gotoUserManagement(){
+          this.$router.push({
+            name: 'user'
+          })
+        },
+        gotoLogManagement(){
+          this.$router.push({
+            name:'log'
+          })
         }
-        // verifyLogin(){
-        //   var this_route = this.$router.options.base
-        //   console.log(this_route)
-        // }
+        
     },
     mounted() {
        const container = document.querySelector('.scroll-container')

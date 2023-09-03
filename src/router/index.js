@@ -10,6 +10,9 @@ import Login from '@/views/Login'
 import AddPod from '@/views/AddPod'
 import DeploymentManagement from '@/views/DeploymentManagement'
 import AddDeployment from '@/views/AddDeployment'
+import ImageManagement from '@/views/ImageManagement'
+import UserManagement from '@/views/UserManagement'
+import LogManagement from '@/views/LogManagement.vue'
 
 Vue.use(Router)
 
@@ -73,6 +76,21 @@ const router = new Router({
       path: '/adddeployment',
       name: 'adddeployment',
       component: AddDeployment
+    },
+    {
+      path: '/image',
+      name: 'image',
+      component: ImageManagement
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: UserManagement
+    },
+    {
+      path: '/log',
+      name: 'log',
+      component: LogManagement
     }
   ]
 })

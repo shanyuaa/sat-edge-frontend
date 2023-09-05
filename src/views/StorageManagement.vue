@@ -62,11 +62,7 @@ export default {
         }
     },
     methods:{
-        gotoNode(nodename){
-            this.$router.push({
-                name:'nodeinfo'
-            })
-        }
+        
     }
 }
 </script>

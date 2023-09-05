@@ -54,9 +54,9 @@
 
           <div :gutter="20" style="display: flex; flex-wrap:wrap; margin-top: 20px; margin-left: 50px;" >
 
-            <!-- <el-card style="margin: 20px;">
+            <el-card style="margin: 20px;">
             <div style="display: flex; justify-content: space-around;  margin-top: 20px; " >
-              <span style="margin-left: -30px;">节点资源监控Top5</span>
+              <span style="margin-left: -30px;">节点资源监控</span>
               <el-select v-model="select_node" slot="prepend" placeholder="请选择" style="width: 150px; margin-top: -5px; margin-right: -50px;">
                 <el-option label="CPU利用率" value="1"></el-option>
                 <el-option label="内存利用率" value="2"></el-option>
@@ -64,7 +64,7 @@
               </el-select>
             </div>
             <div id="nodes_monitor" style="width: 380px; height: 250px"></div>
-          </el-card> -->
+          </el-card>
           <el-card style="margin: 20px;">
             <div id="apps_monitor" style="width: 380px; height: 250px; margin-top: 40px; left: -10px;">
             </div>
@@ -73,7 +73,7 @@
             <div id="GPU_temperature_chart" style="width: 380px; height: 250px; margin-top: 40px;">
             </div>
           </el-card>
-          <el-card style="margin: 20px;">
+          <!-- <el-card style="margin: 20px;">
             <div style="width: 550px; height: 250px; margin-top: 40px;">
               <el-descriptions title="其他信息">
                 <el-descriptions-item label="gpu缩放状态">
@@ -84,7 +84,6 @@
                 <el-descriptions-item label="当前频率"> {{ gpu_frequency_current }}</el-descriptions-item>
                 <el-descriptions-item label="电源控制状态">{{ gpu_power_control_status }}</el-descriptions-item>
                 <el-descriptions-item label="railgate状态">
-                  <!-- <el-tag size="small">学校</el-tag> -->
                   <el-tag style="size:smaller"
                     :type=" gpu_railgate_status  === '开启' ? 'success' : 'danger'"
                     disable-transitions>{{ gpu_railgate_status }}</el-tag>
@@ -97,13 +96,13 @@
               </el-descriptions>
             </div>
 
-          </el-card>
+          </el-card> -->
 
         </div>
 
       </el-card>
 
-      <el-card class="gpu_list">
+      <!-- <el-card class="gpu_list">
         <div style="left: 10px;">
           <span>GPU进程列表</span>
         </div>
@@ -121,7 +120,7 @@
               <el-table-column prop="Priority" label="优先级" width="140px"></el-table-column>
           </el-table>
         </div>
-      </el-card>
+      </el-card> -->
 
     </div>
   </div>
@@ -237,53 +236,11 @@ export default {
       newPromise.then(() => {
          // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
         let myChart = this.$echarts.init(document.getElementById("apps_monitor"));
-        // 指定图表的配置项和数据
-        // let option = {
-        //   // title: {
-        //   //   text: "ECharts test",
-        //   // },
-        //   tooltip: {},
-        //   // legend: {
-        //   //   data: ["销量"],
-        //   // },
-        //   xAxis: {
-        //     name:'时间',
-        //     data: ["17:20", "17:25", "17:30", "17:35", "17:40"],
-        //   },
-        //   yAxis: [
-        //     {
-        //       name:'平均负载',
-        //       position: 'left',
-        //       min:0,
-        //       max:2
-        //     }
-        //     // {
-        //     //   name:'内存使用量',
-        //     //   position: 'right',
-        //     //   min:0,
-        //     //   max:16
-        //     // }
-        //   ],
-        //   series: [
-        //     {
-        //       name: "节点1",
-        //       type: "line",
-        //       // yAxisIndex: 0,
-        //       data: [0.4, 1, 1.2, 1.6, 2],
-        //     },
-        //     {
-        //       name: "节点2",
-        //       type:"line",
-        //       // yAxisIndex: 1,
-        //       data: [1,0.5,0.8,1.3,1.5]
-        //     }
-        //   ],
-        // };
         let option = {
           title: {
-            text: "GPU负载百分比",
+            text: "XXX数据",
             left: 'center',
-            top: '-5px',
+            top: '0px',
             bottom: '10px'
           },
           series: [
@@ -349,9 +306,9 @@ export default {
         let myChart = this.$echarts.init(document.getElementById("GPU_temperature_chart"));
         let option = {
           title: {
-            text: "GPU温度",
+            text: "xxx数据",
             left: 'center',
-            top: '-5px'
+            top: '0px'
           },
           series: [
             {
@@ -506,9 +463,10 @@ export default {
     setTimeout(() =>{
       console.log(this.GPU_load+'   2')
         // this.drawChart_nodes();
+        this.drawChart_nodes();
         this.drawChart_apps();
         this.drawChart_temperature()
-      },1000);
+      },100);
     this.timer_temperature = setInterval(this.getGpuTemperature, 2000);
     this.timer_load = setInterval(this.getGpuLoad, 2000);
 

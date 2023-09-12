@@ -485,20 +485,21 @@ export default {
         console.log(this.GPU_data)
       })
     },
-    getGpuTemperature(){
+    getGpuTemperatureAndLoad(){
       console.log('进来了')
       this.$http.get('http://192.168.1.241:8000/data').then(res =>{
         this.GPU_temperature = res.data.gpu_temperature
+        this.GPU_load = res.data.gpu_load
         console.log(this.GPU_temperature)
       })
     },
-    getGpuLoad(){
-      console.log('进来了')
-      this.$http.get('http://192.168.1.241:8000/data').then(res =>{
-        this.GPU_load = res.data.gpu_load
-        console.log(this.GPU_load)
-      })
-    }
+    // getGpuLoad(){
+    //   console.log('进来了')
+    //   this.$http.get('http://192.168.1.241:8000/data').then(res =>{
+    //     this.GPU_load = res.data.gpu_load
+    //     console.log(this.GPU_load)
+    //   })
+    // }
   },
   mounted() {
     this.getGpuInfo();
@@ -509,8 +510,8 @@ export default {
         this.drawChart_apps();
         this.drawChart_temperature()
       },1000);
-    this.timer_temperature = setInterval(this.getGpuTemperature, 2000);
-    this.timer_load = setInterval(this.getGpuLoad, 2000);
+    this.timer_temperature = setInterval(this.getGpuTemperatureAndLoad, 2000);
+    // this.timer_load = setInterval(this.getGpuLoad, 2000);
 
   },
   watch:{

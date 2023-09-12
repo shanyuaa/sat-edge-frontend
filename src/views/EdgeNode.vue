@@ -50,15 +50,25 @@ export default {
         return{
             currentPage1:1,
             tableData: [{
-                    // name:"",
-                    // ip:"",
-                    // create_time:"",
-                    // roles:["Worker"],
-                    // cpu_cores:12,
-                    // cpu_avaliable:12,
-                    // mem:"31322824",
-                    // mem_avaliable:"31322824"
-                },]
+                    name:"NPU",
+                    ip:"",
+                    create_time:"",
+                    roles:["Worker"],
+                    cpu_cores:12,
+                    cpu_avaliable:12,
+                    mem:"31322824",
+                    mem_avaliable:"31322824"
+                },{
+                    name:"GPU",
+                    ip:"",
+                    create_time:"",
+                    roles:["Worker"],
+                    cpu_cores:12,
+                    cpu_avaliable:12,
+                    mem:"31322824",
+                    mem_avaliable:"31322824"
+                },
+            ]
         }
     },
     methods:{
@@ -73,15 +83,25 @@ export default {
                 name:'addnode'
             })
         },
-        gotoNode(nodename){
-            this.$router.push({
-                name:'nodeinfo'
-            })
+        gotoNode(name){
+            if(name =='NPU'){
+                this.$router.push({
+                name:'npuinfo'
+             })
+            }else if(name =='GPU'){
+                this.$router.push({
+                    name:'gpuinfo'
+                })
+            }
+           
         },
         getNodes(){
             this.$http.get('/node/info').then(res => {
                 console.log(res.data.data.nodes)
-                this.tableData = res.data.data.nodes
+                // this.tableData = res.data.data.nodes
+                for(var i = 0;i<res.data.data.nodes.length;i++){
+                    this.tableData.push(res.data.data.nodes[i])
+                }
                 console.log(this.tableData[0].name)
             })
         }

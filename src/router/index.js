@@ -13,6 +13,11 @@ import AddDeployment from '@/views/AddDeployment'
 import ImageManagement from '@/views/ImageManagement'
 import UserManagement from '@/views/UserManagement'
 import LogManagement from '@/views/LogManagement.vue'
+import NPUInfo from '@/views/NPUInfo.vue'
+import GPUInfo from '@/views/GPUInfo.vue'
+import StorageManagement from '@/views/StorageManagement.vue'
+import VMManagement from '@/views/VMManagement.vue'
+import WebManagement from '@/views/WebManagement.vue'
 
 Vue.use(Router)
 
@@ -91,6 +96,31 @@ const router = new Router({
       path: '/log',
       name: 'log',
       component: LogManagement
+    },
+    {
+      path: '/npuinfo',
+      name: 'npuinfo',
+      component: NPUInfo
+    },
+    {
+      path: '/gpuinfo',
+      name: 'gpuinfo',
+      component: GPUInfo
+    },
+    {
+      path: '/storage',
+      name: 'storage',
+      component: StorageManagement
+    },
+    {
+      path: '/vm',
+      name: 'vm',
+      component: VMManagement
+    },
+    {
+      path: '/web',
+      name: 'web',
+      component: WebManagement
     }
   ]
 })

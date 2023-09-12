@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-container>
-            <el-header style="height: 60px; padding: 15px; width: 100%;">镜像管理</el-header>
+            <el-header style="height: 60px; padding: 15px; width: 100%;">用户管理</el-header>
         </el-container>
         <div class="interface">
             <el-card class="user-list" style="display: inline-block;">
@@ -13,11 +13,6 @@
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <!-- <el-table-column prop="name" label="Name" width="300px">
-                            <template slot-scope="scope">
-                                <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
-                            </template>
-                        </el-table-column> -->
                         <el-table-column prop="username" label="用户名称" width="200px">{{ tableData[0].username }}</el-table-column>
                         <el-table-column prop="type" label="用户类型"  style="width: 100px;">{{ tableData[0].type }}</el-table-column>
                         <el-table-column prop="password" label="密码" width="300px">{{ tableData[0].password }}</el-table-column>
@@ -30,7 +25,6 @@
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
                                         <el-dropdown-item>功能x</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>

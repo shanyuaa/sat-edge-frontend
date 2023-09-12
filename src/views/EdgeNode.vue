@@ -98,7 +98,10 @@ export default {
         getNodes(){
             this.$http.get('/node/info').then(res => {
                 console.log(res.data.data.nodes)
-                this.tableData = res.data.data.nodes
+                // this.tableData = res.data.data.nodes
+                for(var i = 0;i<res.data.data.nodes.length;i++){
+                    this.tableData.push(res.data.data.nodes[i])
+                }
                 console.log(this.tableData[0].name)
             })
         }

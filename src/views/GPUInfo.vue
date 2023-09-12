@@ -50,6 +50,9 @@
                         </el-tab-pane>
                         <el-tab-pane label="监控" name="second" style="justify-content: center;">
                             <div style="display:flex; justify-content: space-around;">
+                                <div id="GPU_load_history" style="width: 800px; height: 400px"></div>
+                            </div>
+                            <div style="display:flex; justify-content: space-around;">
                                 <div id="GPU_load_chart" style="width: 380px; height: 300px; margin-top: 40px; left: -10px;"></div>
                                 <div id="GPU_temperature_chart" style="width: 380px; height: 300px; margin-top: 40px; "></div>
                             </div>
@@ -88,6 +91,12 @@ export default {
             },
             GPU_data:[
             ],
+            GPU_load_data_time:[
+
+            ],
+            GPU_load_data_value:[
+
+            ],
             gpu_temperature:'',
             gpu_load:'',
             gpu_frequency_current:'',
@@ -118,6 +127,43 @@ export default {
         },
 
         // TODO
+
+        get_gpu_temperature(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_temperature').then(res =>{
+                console.log(res)
+
+            })
+        },
+
+        get_gpu_load(){
+            var timestamp_end = Date.parse(new Date().toUTCString())/1000;
+            console.log(timestamp_end)
+            var timestamp_start = timestamp_end - 600
+            let api = 'http://192.168.13.147:30039/api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
+            this.$http.get(api).then(res =>{
+                this.GPU_load_data = res.data.data.result[0].values
+                    // 时间戳 
+                for(var i = 0; i < this.GPU_load_data.length; i = i+60){
+                    if(this.GPU_load_data_time.length>=10){
+                        this.GPU_load_data_time.shift()
+                        this.GPU_load_data_value.shift()
+                    }
+                    let timestamp = this.GPU_load_data[i][0]
+                    let date = new Date(parseInt(timestamp)*1000);
+                    let Year = date.getFullYear();
+                    let Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+                    let Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+                    let Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+                    let Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+                    let Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                    let  GMT =  Year + '-' + Moth + '-' + Day + '   '+ Hour +':'+ Minute  + ':' + Sechond;
+                    this.GPU_load_data_time.push(GMT)
+                    this.GPU_load_data_value.push(this.GPU_load_data[i][1])
+                }
+                console.log(this.GPU_load_data_time)
+            })
+            
+        },
     
         get_gpu_process_info(){
 
@@ -206,103 +252,68 @@ export default {
                     },
                 ]
                 };
-                // setInterval(function () {
-                //   this.getGpuTemperature;
-
-                //   myChart.setOption({
-                //     series: [
-                //       {
-                //         data: [
-                //           {
-                //             value: this.GPU_temperature
-                //           }
-                //         ]
-                //       }
-                //     ]
-                //   });
-                // }, 2000);
                 option && myChart.setOption(option);
             })
         },
         drawChart_load(){
+            // 基于准备好的dom，初始化echarts实例
             let newPromise = new Promise((resolve) => {
                 resolve()
-                })
+            })
+            //然后异步执行echarts的初始化函数
             newPromise.then(() => {
-                // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
-                let myChart = this.$echarts.init(document.getElementById("GPU_load_chart"));
-                let option = {
-                title: {
-                    text: "GPU负载百分比",
-                    left: 'center',
-                    top: '0px',
-                    bottom: '10px'
+            //	此dom为echarts图标展示dom
+            let myChart = this.$echarts.init(document.getElementById('GPU_load_history'))
+            let option = {
+                title: { text: 'GPU负载百分比' },
+                xAxis: {
+                    data: Object.values(this.GPU_load_data_time)
                 },
+                yAxis: {},
                 series: [
                     {
-                    type: 'gauge',
-                    progress: {
-                        show: true,
-                        width: 10
-                    },
-                    axisLine: {
-                        lineStyle: {
-                        width: 10
+                        data: Object.values(this.GPU_load_data_value),
+                        type: 'line',
+                        areaStyle: {
+                            opacity: 0.5
+                        },
+                        emphasis: {
+                            label:{
+                                show: true
+                            }
                         }
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    splitLine: {
-                        length: 10,
-                        lineStyle: {
-                        width: 2,
-                        color: '#999'
-                        }
-                    },
-                    axisLabel: {
-                        distance: 15,
-                        color: '#999',
-                        fontSize: 10
-                    },
-                    anchor: {
-                        show: true,
-                        showAbove: true,
-                        size: 10,
-                        itemStyle: {
-                        borderWidth: 10
-                        }
-                    },
-                    title: {
-                        show: true
-                    },
-                    detail: {
-                        valueAnimation: true,
-                        fontSize: 20,
-                        offsetCenter: [0, '70%']
-                    },
-                    data: [
-                        {
-                        value: this.GPU_load
-                        }
-                    ]
-                    }
-                ]
-                }
-                myChart.setOption(option);
-            })
-        },
+                    }]
+            }
+            // 绘制图表
+            option && myChart.setOption(option);
+        });
+    },
         
+    },
+    created(){
+        this.get_gpu_load();
+        this.get_gpu_temperature();
     },
     mounted() {
         setTimeout(() =>{
             // this.drawChart_nodes();
+            // this.drawChart_load();
             this.drawChart_load();
             this.drawChart_temperature();
         },1000);
-        // this.timer_temperature = setInterval(this.get_npu_temperature, 15000);
+        // this.timer_load = setInterval(this.get_gpu_load, 5000);
         
-    }
+    },
+    watch:{
+      GPU_load_data_time:{
+        handler(newVal){
+          console.log(newVal);
+          //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
+          // console.log(this.edgeStatus[2])
+          this.drawChart_load()
+        },
+      }
+    },
 }
 </script>
 
@@ -326,7 +337,7 @@ export default {
 .NodeInfoCard2{
     position: relative;
     width: 84%;
-    height: 50%;
+    margin-bottom: 5%;
     padding: 10px;
     margin-top:60px;
     left:2%;

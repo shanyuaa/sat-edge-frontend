@@ -16,16 +16,24 @@
         <div class="interface">
             <el-card class="NodeInfoCard1">
                 <el-descriptions title="节点信息">
-                <el-descriptions-item label="芯片ID">{{Npu_chip_id}}</el-descriptions-item>
-                <el-descriptions-item label="闪存ID">{{ Npu_flash_id }}</el-descriptions-item>
-                <el-descriptions-item label="闪存容量">{{ Npu_flash_capacity }}</el-descriptions-item>
-                <el-descriptions-item label="状态">
-                    <el-tag size="small">-</el-tag>
+                <el-descriptions-item label="当前频率">{{gpu_frequency_current}}</el-descriptions-item>
+                <el-descriptions-item label="电源控制状态">{{  gpu_power_control_status }}</el-descriptions-item>
+                <el-descriptions-item label="railgate状态">
+                    <el-tag style="size:smaller"
+                    :type=" gpu_railgate_status  === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_railgate_status }}</el-tag>
                 </el-descriptions-item>
-                <el-descriptions-item label="内存容量">{{Npu_memory_capacity}}</el-descriptions-item>
-                <el-descriptions-item label="时钟速度">{{Npu_clock_speed}} Mhz</el-descriptions-item>
-                <el-descriptions-item label="大页总数">{{Npu_hugepages_total}}</el-descriptions-item>
-                <el-descriptions-item label="额定功率">{{Npu_power_dissipation}} W</el-descriptions-item>
+                
+                <el-descriptions-item label="tpc pg mask状态">
+                    <el-tag style="size:smaller"
+                    :type=" gpu_tpc_pg_mask_statu  === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_tpc_pg_mask_status }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="3D缩放状态">
+                    <el-tag style="size:smaller"
+                    :type="  gpu_3d_scaling_status   === '开启' ? 'success' : 'danger'"
+                    disable-transitions>{{ gpu_3d_scaling_status }}</el-tag>
+                </el-descriptions-item>
                 
             </el-descriptions>
             <div>
@@ -40,11 +48,13 @@
                                 <span>GPU进程列表</span>
                             </div>
                             <div style="display: flex; justify-content:space-around; margin-top: 20px;">
-                                <el-table :data="GPU_data" stripe style="width: 100%">
+                                <el-table :data="gpu_process_info" stripe style="width: 100%">
                                     <el-table-column prop="command" label="命令" width="150px"></el-table-column>
                                     <el-table-column prop="container" label="容器" width="150px"></el-table-column>
+                                    <el-table-column prop="namespace" label="命名空间" width="100px"></el-table-column>
                                     <el-table-column prop="cpu_mem" label="cpu_mem"  style="width: 100px;"></el-table-column>
                                     <el-table-column prop="job" label="job" width="100px"></el-table-column>
+                                    <el-table-column prop="pid" label="pid" width="100px"></el-table-column>
                                 </el-table>
                             </div>
                         </el-tab-pane>
@@ -53,7 +63,7 @@
                                 <div id="GPU_load_history" style="width: 800px; height: 400px"></div>
                             </div>
                             <div style="display:flex; justify-content: space-around;">
-                                <div id="GPU_load_chart" style="width: 380px; height: 300px; margin-top: 40px; left: -10px;"></div>
+                                <!-- <div id="GPU_load_chart" style="width: 380px; height: 300px; margin-top: 40px; left: -10px;"></div> -->
                                 <div id="GPU_temperature_chart" style="width: 380px; height: 300px; margin-top: 40px; "></div>
                             </div>
                             
@@ -64,13 +74,13 @@
                     </el-tabs>
                 </template>
             </el-card>
-            
         </div>
     </div>
 
 </template>
 
 <script>
+
 export default {
     data() {
         return{
@@ -89,8 +99,8 @@ export default {
             CpuSeconds:{
 
             },
-            GPU_data:[
-            ],
+            
+            GPU_load_data:[],
             GPU_load_data_time:[
 
             ],
@@ -104,7 +114,7 @@ export default {
             gpu_railgate_status:'',
             gpu_tpc_pg_mask_status:'',
             gpu_3d_scaling_status:'',
-            process_info:[]
+            gpu_process_info:[]
         }
     },
     methods:{
@@ -114,7 +124,44 @@ export default {
                 this.Npu_flash_id = res.data.data.result[0].value[1]
             })
         },
-        
+        get_gpu_frequency_current(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_frequency_current').then(res =>{
+                this.gpu_frequency_current = res.data.data.result[0].value[1]
+            })
+        },
+        get_gpu_power_control_status(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_power_control_status').then(res =>{
+                this.gpu_power_control_status = res.data.data.result[0].value[1]
+            })
+        },
+        get_gpu_railgate_status(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_railgate_status').then(res =>{
+                if(res.data.data.result[0].value[1] == 1){
+                    this.gpu_railgate_status = '开启'
+                }else{
+                    this.gpu_railgate_status = '关闭'
+                }
+            })
+        },
+        get_gpu_tpc_pg_mask_status(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_tpc_pg_mask_status').then(res =>{
+                if(res.data.data.result[0].value[1] == 1){
+                    this.gpu_tpc_pg_mask_status = '开启'
+                }else{
+                    this.gpu_tpc_pg_mask_status = '关闭'
+                }
+            })
+        },
+        get_gpu_3d_scaling_status(){
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_3d_scaling_status').then(res =>{
+                if(res.data.data.result[0].value[1] == 1){
+                    this.gpu_3d_scaling_status = '开启'
+                }else{
+                    this.gpu_3d_scaling_status = '关闭'
+                }
+            })
+        },
+
         goBack(){
             this.$router.push({
                 name:'node'
@@ -130,8 +177,7 @@ export default {
 
         get_gpu_temperature(){
             this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_temperature').then(res =>{
-                console.log(res)
-
+                this.gpu_temperature = res.data.data.result[0].value[1]
             })
         },
 
@@ -140,13 +186,16 @@ export default {
             console.log(timestamp_end)
             var timestamp_start = timestamp_end - 600
             let api = 'http://192.168.13.147:30039/api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
+            console.log(api)
             this.$http.get(api).then(res =>{
+                console.log(res)
                 this.GPU_load_data = res.data.data.result[0].values
                     // 时间戳 
                 for(var i = 0; i < this.GPU_load_data.length; i = i+60){
                     if(this.GPU_load_data_time.length>=10){
                         this.GPU_load_data_time.shift()
                         this.GPU_load_data_value.shift()
+                        console.log('更新了')
                     }
                     let timestamp = this.GPU_load_data[i][0]
                     let date = new Date(parseInt(timestamp)*1000);
@@ -166,7 +215,20 @@ export default {
         },
     
         get_gpu_process_info(){
-
+            this.$http.get('http://192.168.13.147:30039/api/v1/query?query=process_info').then(res =>{
+                console.log(res)
+                for(var i=0; i < res.data.data.result.length; i ++){
+                    this.gpu_process_info.push({
+                        command:res.data.data.result[i].metric.command,
+                        container:res.data.data.result[i].metric.container,
+                        cpu_mem:res.data.data.result[i].metric.cpu_mem,
+                        job:res.data.data.result[i].metric.job,
+                        namespace:res.data.data.result[i].metric.namespace,
+                        pid:res.data.data.result[i].metric.pid,
+                        pod:res.data.data.result[i].metric.pod
+                    })
+                }
+            })
         },
         
         drawChart_temperature(){
@@ -246,7 +308,7 @@ export default {
                     },
                     data: [
                         {
-                        value: this.Gpu_temperature
+                        value: this.gpu_temperature
                         }
                     ]
                     },
@@ -291,8 +353,17 @@ export default {
         
     },
     created(){
+        this.GPU_load_data = []
+        this.GPU_load_data_time = []
+        this.GPU_load_data_value = []
         this.get_gpu_load();
         this.get_gpu_temperature();
+        this.get_gpu_process_info();
+        this.get_gpu_frequency_current();
+        this.get_gpu_power_control_status();
+        this.get_gpu_railgate_status();
+        this.get_gpu_tpc_pg_mask_status();
+        this.get_gpu_3d_scaling_status();
     },
     mounted() {
         setTimeout(() =>{
@@ -311,6 +382,14 @@ export default {
           //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
           // console.log(this.edgeStatus[2])
           this.drawChart_load()
+        },
+      },
+      gpu_temperature:{
+        handler(newVal){
+          console.log(newVal);
+          //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
+          // console.log(this.edgeStatus[2])
+          this.drawChart_temperature()
         },
       }
     },

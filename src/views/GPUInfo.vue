@@ -191,12 +191,30 @@ export default {
                 console.log(res)
                 this.GPU_load_data = res.data.data.result[0].values
                     // 时间戳 
-                for(var i = 0; i < this.GPU_load_data.length; i = i+60){
-                    if(this.GPU_load_data_time.length>=10){
-                        this.GPU_load_data_time.shift()
-                        this.GPU_load_data_value.shift()
-                        console.log('更新了')
-                    }
+                if(this.GPU_load_data_time.length>=10){
+                    this.GPU_load_data_time.shift()
+                    this.GPU_load_data_value.shift()
+                    console.log('更新了')
+                    console.log(this.GPU_load_data_time)
+
+                    var j = this.GPU_load_data.length-1
+                    let timestamp = this.GPU_load_data[j][0]
+                    let date = new Date(parseInt(timestamp)*1000);
+                    let Year = date.getFullYear();
+                    let Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+                    let Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+                    let Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+                    let Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+                    let Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                    let  GMT =  Year + '-' + Moth + '-' + Day + '   '+ Hour +':'+ Minute  + ':' + Sechond;
+
+                    this.GPU_load_data_time.push(GMT)
+                    this.GPU_load_data_value.push(this.GPU_load_data[j][1])
+
+                    console.log('test'+GMT)
+                }else{
+                    for(var i = 0; i < this.GPU_load_data.length; i = i+60){
+                    
                     let timestamp = this.GPU_load_data[i][0]
                     let date = new Date(parseInt(timestamp)*1000);
                     let Year = date.getFullYear();
@@ -208,8 +226,10 @@ export default {
                     let  GMT =  Year + '-' + Moth + '-' + Day + '   '+ Hour +':'+ Minute  + ':' + Sechond;
                     this.GPU_load_data_time.push(GMT)
                     this.GPU_load_data_value.push(this.GPU_load_data[i][1])
+                 }
                 }
-                console.log(this.GPU_load_data_time)
+                
+                // console.log(this.GPU_load_data_time)
             })
             
         },
@@ -372,7 +392,7 @@ export default {
             this.drawChart_load();
             this.drawChart_temperature();
         },1000);
-        // this.timer_load = setInterval(this.get_gpu_load, 5000);
+        this.timer_load = setInterval(this.get_gpu_load, 5000);
         
     },
     watch:{

@@ -21,18 +21,18 @@
                         <el-table-column prop="replicas" label="副本数" width="100px"></el-table-column>
                         
                         <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
-                        <el-table-column prop="image_url" label="镜像url"  style="width: 200px;"></el-table-column>
+                        <el-table-column prop="image_url" label="镜像url"  style="width: 300px;"></el-table-column>
                         <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
+                                
                                 <el-button size="mini" type="text" @click="deleteDeployment(scope.row.name)">删除</el-button>
                                 <el-dropdown style="font-size: smaller; left: 5px;">
                                     <span class="el-dropdown-link">
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>修改配置</el-dropdown-item>
+                                        <el-dropdown-item @click="updateDeployment(scope.row.name)">修改配置</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </template>
@@ -98,6 +98,9 @@ export default {
                     location.reload()
                 }
             })
+        },
+        updateDeployment(name){
+            
         }
     },
     mounted(){

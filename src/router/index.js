@@ -19,6 +19,7 @@ import StorageManagement from '@/views/StorageManagement.vue'
 import VMManagement from '@/views/VMManagement.vue'
 import ServiceManagement from '@/views/ServiceManagement.vue'
 import AddJob from '@/views/AddJob.vue'
+import AddService from '@/views/AddService.vue'
 
 Vue.use(Router)
 
@@ -127,7 +128,12 @@ const router = new Router({
       path:'/addjob',
       name: 'addjob',
       component: AddJob
-    }
+    },
+    {
+      path:'/addservice',
+      name: 'addservice',
+      component: AddService
+    },
   ]
 })
 

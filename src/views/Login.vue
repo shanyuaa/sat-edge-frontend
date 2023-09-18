@@ -19,14 +19,14 @@
             <el-button style="margin-top: 30px; left: 65%;" type="primary">主要按钮</el-button>
         </div> -->
         <el-form label-position="left" label-width="80px" style="margin-top:30px; ">
-            <el-form-item label="用户名" style="margin-top: 40px; width: 350px; ">
-                <el-input v-model="username"></el-input>
+            <el-form-item :model=user label="用户名" style="margin-top: 40px; width: 350px; ">
+                <el-input v-model="user.username"></el-input>
             </el-form-item>
             <el-form-item label="密码" style="margin-top: 50px; width: 350px;">
-                <el-input v-model="password" type="password"></el-input>
+                <el-input v-model="user.password" type="password"></el-input>
             </el-form-item>
             <div style="display: flex; justify-content:center; align-items: center;">
-                <el-button style="margin-top: 30px; width: 350px;" type="primary" @click="login()">登录</el-button>
+                <el-button style="margin-top: 30px; width: 350px;" type="primary" @click="login(user)">登录</el-button>
             </div> 
         </el-form>
       </el-card>
@@ -38,30 +38,34 @@
     name: 'Home',
     data () {
       return {
-        username:'',
-        password:'',
-        
+        user:{
+          username:'',
+          password:'',
+        }
       }
     },
     methods:{
-        login(){
-            sessionStorage.setItem('name', '123456')
-        },
+        // login(){
+        //     sessionStorage.setItem('name', '123456')
+        // },
         clearSession(){
             sessionStorage.clear()
             this.$parent.ifLogin = false;
         },
-        login(){
-            if(this.username == 'admin' && this.password == 'admin'){
-                this.resetSetItem('name', 'admin');  
+        login(user){
+          this.$http.post('/user/login',user).then(res =>{
+            if(res.data.status == 0){
+              this.$message.success('登录成功')
+              sessionStorage.setItem('name', res.data.data.token)
+              this.resetSetItem('name', 'admin');  
                 this.$parent.ifLogin = true
                 this.$router.push({
                     name:'home'
                 })
             }else{
-                console.log('nono')
                 this.$message.error('用户名或密码错误')
             }
+          })
         }
     },
     mounted() {

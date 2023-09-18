@@ -6,7 +6,7 @@
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建服务</el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddService">创建服务</el-button>
                     <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input>
@@ -15,15 +15,36 @@
                     <el-table :data="tableData" stripe style="width: 100%">
                         <el-table-column prop="name" label="服务名称" width="300px"></el-table-column>
                         <el-table-column prop="selector" label="选择器" width="200px"></el-table-column>
-                        <template slot-scope="scope">
-                            <el-table-column prop="port" label="service端口" width="100px">{{ scope.row.ports.port }}</el-table-column>
-                            <el-table-column prop="ports" label="pod端口" width="100px">{{ scope.row.ports.port }}</el-table-column>
-                        </template>
+                        <!-- <template slot-scope="scope" >
+                            <el-table-column label="端口信息" :data="scope.row.ports">
+                               
+                                    <el-table-column label="端口" prop="port"></el-table-column>
+                                    <el-table-column label="目标端口" prop="target_port"></el-table-column>
+                                    <el-table-column label="协议" prop="protocol"></el-table-column>
+                                
+                         </el-table-column>  
+                        </template> -->
+                        <el-table-column text-align="center" label="端口">
+                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="端口号" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].port}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="目标端口号" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].target_port}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="协议" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].protocol}}</span>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
                         
-                        <el-table-column prop="createtime" label="创建时间"  style="width: 100px;">{{ tableData[0].createtime }}</el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                <el-button size="mini" type="text" @click="DeleteService(scope.row.name)">删除</el-button>
                                 <el-dropdown style="font-size: smaller; left: 5px;">
                                     <el-dropdown-menu slot="dropdown">
                                         <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
@@ -55,20 +76,49 @@ export default {
     data() {
         return{
             currentPage1:1,
-            tableData: [{
-                name:'',
-                type:'',
-                selector:{},
-                ports:[]
-            }]
+            tableData: [
+                // {
+                // name:'hh',
+                // type:'hh',
+                // selector:'fsdf',
+                // ports:[{
+                //     port: 5000,
+                //     target_port: 5000,
+                //     protocol: "TCP"
+                // }]
+                // }
+        ],
+            
         }
     },
     methods:{
         getAllServices(){
             this.$http.post('/service/info').then(res=>{
+                console.log(res)
+                // this.tableData.push(res.data.data.services[0])
                 this.tableData = res.data.data.services
+                console.log(this.tableData)
+            })
+        },
+        toAddService(){
+            this.$router.push({
+                name: 'addservice'
+            })
+        },
+        DeleteService(name){
+            console.log(name)
+            let obj = {"name":name}
+            this.$http.post('/service/delete', obj).then(res =>{
+                console.log(res)
+                if(res.data.status === 0){
+                    this.$message.success('删除成功')
+                    location.reload()
+                }
             })
         }
+    },
+    mounted(){
+        this.getAllServices()
     }
 }
 </script>

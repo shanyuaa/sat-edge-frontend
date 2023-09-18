@@ -93,7 +93,7 @@ export default {
                     name:'gpuinfo'
                 })
             }
-           
+            
         },
         getNodes(){
             this.$http.get('/node/info').then(res => {

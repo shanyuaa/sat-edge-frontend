@@ -6,25 +6,27 @@
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建任务</el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddJob">创建任务</el-button>
                     <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input>
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <el-table-column prop="jobname" label="Name" width="300px">
+                        <el-table-column prop="name" label="名称" width="150px"></el-table-column>
+                        <el-table-column prop="image_name" label="镜像名称" width="300px"></el-table-column>
+                        <el-table-column prop="image_url" label="镜像url" width="500px"></el-table-column>
+                        <el-table-column prop="status" label="状态"  style="width: 50px;">
                             <template slot-scope="scope">
-                                <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
+                                <el-tag style="size:smaller"
+                                :type=" scope.row.status  === 'Running' ? 'success' : 'danger'"
+                                disable-transitions>{{ scope.row.status }}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="completions" label="Completions" width="200px">{{ tableData[0].completions }}</el-table-column>
-                        <el-table-column prop="duration" label="Duration" width="100px">{{ tableData[0].duration }}</el-table-column>
-                        <el-table-column prop="age" label="Age"  style="width: 100px;">{{ tableData[0].age }}</el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row)">停用</el-button>
-                                <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                <el-button size="mini" type="text" @click="deleteJob(scope.row.name)">删除</el-button>
                                 <el-dropdown style="font-size: smaller; left: 5px;">
                                     <span class="el-dropdown-link">
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
@@ -61,20 +63,41 @@ export default {
             currentPage1:1,
             tableData: [{
                 name:'myjob',
-                completions:'1/1',
-                duration:'4s',
-                age:'40s',
-                operation:''
+                image_name:'',
+                image_url:'',
+                back_off_limit:'',
+                status:''
                 }]
         }
     },
     methods:{
-        gotoNode(nodename){
+        
+        getAllJobs(){
+            this.$http.post('/job/info').then(res =>{
+                console.log(res)
+                this.tableData = res.data.data.jobs
+                // console.log(this.tableData)
+            })
+        },
+        toAddJob(){
             this.$router.push({
-                name:'nodeinfo'
+                name: 'addjob'
+            })
+        },
+        deleteJob(name){
+            let obj = {"name":name}
+            this.$http.post('/job/delete', obj).then(res =>{
+                console.log(res)
+                if(res.data.status === 0){
+                    this.$message.success('删除成功')
+                    location.reload()
+                }
             })
         }
-    }
+    },
+    mounted() {
+        this.getAllJobs();
+    },
 }
 </script>
 

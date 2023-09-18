@@ -109,7 +109,7 @@ export default {
         },
         gotoWebManagement(){
           this.$router.push({
-            name:'web'
+            name:'service'
           })
         }
         

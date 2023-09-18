@@ -17,7 +17,8 @@ import NPUInfo from '@/views/NPUInfo.vue'
 import GPUInfo from '@/views/GPUInfo.vue'
 import StorageManagement from '@/views/StorageManagement.vue'
 import VMManagement from '@/views/VMManagement.vue'
-import WebManagement from '@/views/WebManagement.vue'
+import ServiceManagement from '@/views/ServiceManagement.vue'
+import AddJob from '@/views/AddJob.vue'
 
 Vue.use(Router)
 
@@ -118,63 +119,19 @@ const router = new Router({
       component: VMManagement
     },
     {
-      path: '/web',
-      name: 'web',
-      component: WebManagement
+      path: '/service',
+      name: 'service',
+      component: ServiceManagement
+    },
+    {
+      path:'/addjob',
+      name: 'addjob',
+      component: AddJob
     }
   ]
 })
 
 
-// export default new Router({
-//   mode: 'history',
-//   routes: [
-//     // {
-//     //   path: '/',
-//     //   name: 'HelloWorld',
-//     //   component: HelloWorld
-//     // },
-//     {
-//       path:'/',
-//       redirect: '/login'
-//     },
-//     {
-//       path:'/login',
-//       name: 'login',
-//       component: Login
-//     },
-//     {
-//       path: '/home',
-//       name: 'home',
-//       component: Home
-//     },
-//     {
-//       path: '/node',
-//       name: 'node',
-//       component: EdgeNode
-//     },
-//     {
-//       path: '/addnode',
-//       name: 'addnode',
-//       component: AddEdgeNode
-//     },
-//     {
-//       path: '/job',
-//       name: 'job',
-//       component: JobManagement
-//     },
-//     {
-//       path: '/pod',
-//       name: 'pod',
-//       component: PodManagement
-//     },
-//     {
-//       path: '/nodeinfo',
-//       name: 'nodeinfo',
-//       component: NodeInfo
-//     },
-//   ]
-// },
 router.beforeEach((to, from, next) => {
   // 判断用户是否登录
   var isLoggedIn = ''/* 在这里判断用户是否登录，比如从 Vuex 状态中获取登录状态 */;

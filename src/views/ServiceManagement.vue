@@ -13,9 +13,13 @@
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <el-table-column prop="name" label="服务名称" width="300px">{{ tableData[0].name }}</el-table-column>
-                        <el-table-column prop="domain" label="域名访问" width="200px">{{ tableData[0].domain }}</el-table-column>
-                        <el-table-column prop="namespace" label="命名空间" width="100px">{{ tableData[0].namespace }}</el-table-column>
+                        <el-table-column prop="name" label="服务名称" width="300px"></el-table-column>
+                        <el-table-column prop="selector" label="选择器" width="200px"></el-table-column>
+                        <template slot-scope="scope">
+                            <el-table-column prop="port" label="service端口" width="100px">{{ scope.row.ports.port }}</el-table-column>
+                            <el-table-column prop="ports" label="pod端口" width="100px">{{ scope.row.ports.port }}</el-table-column>
+                        </template>
+                        
                         <el-table-column prop="createtime" label="创建时间"  style="width: 100px;">{{ tableData[0].createtime }}</el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
@@ -52,15 +56,19 @@ export default {
         return{
             currentPage1:1,
             tableData: [{
-                name:'abc',
-                domain:'abc.mxl',
-                namespace:'mxl',
-                createtime:'2023-8-22 19:30:23'
-                }]
+                name:'',
+                type:'',
+                selector:{},
+                ports:[]
+            }]
         }
     },
     methods:{
-        
+        getAllServices(){
+            this.$http.post('/service/info').then(res=>{
+                this.tableData = res.data.data.services
+            })
+        }
     }
 }
 </script>

@@ -6,28 +6,21 @@
         <div class="interface">
             <el-card class="user-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">添加用户</el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddUser">添加用户</el-button>
                     <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input>
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
-                        <el-table-column prop="username" label="用户名称" width="200px">{{ tableData[0].username }}</el-table-column>
-                        <el-table-column prop="type" label="用户类型"  style="width: 100px;">{{ tableData[0].type }}</el-table-column>
-                        <el-table-column prop="password" label="密码" width="300px">{{ tableData[0].password }}</el-table-column>
-                        <el-table-column prop="createtime" label="创建时间" width="300px">{{ tableData[0].createtime }}</el-table-column>
+                        <el-table-column prop="username" label="用户名称" width="200px"></el-table-column>
+                        <!-- <el-table-column prop="type" label="用户类型"  style="width: 100px;">{{ tableData[0].type }}</el-table-column> -->
+                        <el-table-column prop="password" label="密码" width="300px"></el-table-column>
+                        <el-table-column  label="创建时间" width="300px">-</el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
-                                    <span class="el-dropdown-link">
-                                        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>功能x</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                                <el-button size="mini" type="text" @click="DeleteUser( scope.row.username)">删除</el-button>
+                                
                             </template>
                         </el-table-column>
                     </el-table>
@@ -53,17 +46,36 @@ export default {
     data() {
         return{
             currentPage1:1,
-            tableData: [{
-                username:'admin',
-                type: '管理员',
-                password:'admin',
-                createtime:'2023-8-22 19:30:23',
-                }]
+            tableData: []
         }
     },
     methods:{
-        
-    }
+        getUserInfo(){
+            this.$http.post('/user/info').then(res=>{
+                console.log(res)
+                this.tableData = res.data.data.users
+            })
+        },
+        toAddUser(){
+            this.$router.push({
+                name:'adduser'
+            })
+        },
+        DeleteUser(username){
+            let obj = {"username":username}
+            console.log(obj)
+            this.$http.post('/user/delete', obj).then(res =>{
+                console.log(res)
+                if(res.data.status === 0){
+                    this.$message.success('删除成功')
+                    location.reload()
+                }
+            })
+        }
+    },
+    mounted() {
+        this.getUserInfo();
+    },
 }
 </script>
 

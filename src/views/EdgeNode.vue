@@ -20,12 +20,14 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="ip" label="IP" width="150px"></el-table-column>
-                        <el-table-column prop="create_time" label="创建时间"  style="width: 100px;"></el-table-column>
+                        <el-table-column prop="create_time" label="创建时间" ></el-table-column>
                         <el-table-column prop="roles" label="节点类型" width="100px"></el-table-column>
                         <el-table-column prop="cpu_cores" label="CPU核心数" width="100px"></el-table-column>
                         <el-table-column prop="cpu_avaliable" label="CPU空闲数" width="100px"></el-table-column>
-                        <el-table-column prop="memory" label="内存" width="140px"></el-table-column>
-                        <el-table-column prop="memory_avaliable" label="可用内存" width="140px"></el-table-column>
+                        <el-table-column prop="memory" label="内存"></el-table-column>
+                        <el-table-column prop="memory_avaliable" label="可用内存" ></el-table-column>
+                        <el-table-column prop="gpu" label="GPU" width="100px"></el-table-column>
+                        <el-table-column prop="npu" label="NPU" width="100px"></el-table-column>
                     </el-table>
                 </div>
                 <div class="block">
@@ -49,25 +51,26 @@ export default {
     data() {
         return{
             currentPage1:1,
-            tableData: [{
-                    name:"NPU",
-                    ip:"",
-                    create_time:"",
-                    roles:["Worker"],
-                    cpu_cores:12,
-                    cpu_avaliable:12,
-                    mem:"31322824",
-                    mem_avaliable:"31322824"
-                },{
-                    name:"GPU",
-                    ip:"",
-                    create_time:"",
-                    roles:["Worker"],
-                    cpu_cores:12,
-                    cpu_avaliable:12,
-                    mem:"31322824",
-                    mem_avaliable:"31322824"
-                },
+            tableData: [
+                // {
+                //     name:"NPU",
+                //     ip:"",
+                //     create_time:"",
+                //     roles:["Worker"],
+                //     cpu_cores:12,
+                //     cpu_avaliable:12,
+                //     mem:"31322824",
+                //     mem_avaliable:"31322824"
+                // },{
+                //     name:"GPU",
+                //     ip:"",
+                //     create_time:"",
+                //     roles:["Worker"],
+                //     cpu_cores:12,
+                //     cpu_avaliable:12,
+                //     mem:"31322824",
+                //     mem_avaliable:"31322824"
+                // },
             ]
         }
     },
@@ -84,15 +87,19 @@ export default {
             })
         },
         gotoNode(name){
-            if(name =='NPU'){
-                this.$router.push({
-                name:'npuinfo'
-             })
-            }else if(name =='GPU'){
-                this.$router.push({
-                    name:'gpuinfo'
-                })
-            }
+            // if(name =='NPU'){
+            //     this.$router.push({
+            //     name:'npuinfo'
+            //  })
+            // }else if(name =='GPU'){
+            //     this.$router.push({
+            //         name:'gpuinfo'
+            //     })
+            // }
+            this.$router.push({
+                name:'nodeinfo',
+                params:{ name: name }
+            })
             
         },
         getNodes(){
@@ -100,6 +107,8 @@ export default {
                 console.log(res.data.data.nodes)
                 // this.tableData = res.data.data.nodes
                 for(var i = 0;i<res.data.data.nodes.length;i++){
+                    res.data.data.nodes[i].gpu = res.data.data.nodes[i].gpu ? '√':'×'
+                    res.data.data.nodes[i].npu = res.data.data.nodes[i].npu ? '√':'×'
                     this.tableData.push(res.data.data.nodes[i])
                 }
                 console.log(this.tableData[0].name)
@@ -108,6 +117,7 @@ export default {
     },
     mounted() {
         this.getNodes();
+        
     },
 }
 </script>

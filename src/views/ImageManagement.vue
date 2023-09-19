@@ -6,7 +6,8 @@
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建任务</el-button> -->
+
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddImage">拉取镜像</el-button>
                     <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input>
@@ -18,21 +19,14 @@
                                 <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
                             </template>
                         </el-table-column> -->
-                        <el-table-column prop="name" label="镜像名称" width="200px">{{ tableData[0].name }}</el-table-column>
-                        <el-table-column prop="type" label="镜像类型" width="300px">{{ tableData[0].type }}</el-table-column>
-                        <el-table-column prop="url" label="镜像地址"  style="width: 100px;">{{ tableData[0].url }}</el-table-column>
-                        <el-table-column prop="operation" label="操作">
+                        <el-table-column prop="tag" label="镜像标签" width="200px"></el-table-column>
+                        <el-table-column prop="id" label="镜像ID" width="700px"></el-table-column>
+                        <el-table-column prop="size" label="镜像大小"  ></el-table-column>
+                        <el-table-column prop="created" label="创建时间" width="200px"></el-table-column>
+                        <el-table-column prop="" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
-                                    <span class="el-dropdown-link">
-                                        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
-                                        <el-dropdown-item>功能x</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                                <el-button size="mini" type="text" @click="DeleteImage(scope.row.tag)">删除</el-button>
+                                
                             </template>
                         </el-table-column>
                     </el-table>
@@ -58,38 +52,56 @@ export default {
     data() {
         return{
             currentPage1:1,
-            tableData: [{
-                name:'nginx:latest',
-                type: '',
-                url: ''
-                }]
+            tableData: [
+
+            ]
         }
     },
     methods:{
-        gotoNode(nodename){
+        
+        getImageData(){
+            this.$http.post('/image/info').then(res =>{
+                console.log(res)
+                this.tableData = res.data.data.images
+            })
+        },
+        toAddImage(){
             this.$router.push({
-                name:'nodeinfo'
+                name:'addimage'
+            })
+        },
+        DeleteImage(name){
+            let obj = {"name":name}
+            console.log(obj)
+            this.$http.post('/image/delete', obj).then(res =>{
+                console.log(res)
+                if(res.data.status === 0){
+                    this.$message.success('删除成功')
+                    location.reload()
+                }
             })
         }
-    }
+    },
+    mounted() {
+        this.getImageData();
+    },
 }
 </script>
 
 <style scoped>
 .interface{
-  height: 100%;
-  background-color: #F2F6FC;
-  position: fixed;
-  width: 90%;
+    height: 100%;
+    background-color: #F2F6FC;
 }
 
 .job-list{
   position: relative;
   width: 92%;
-  padding: 10px;
+  padding: 0px;
   top:30px;
   left:2%;
   right: 2%;
+  margin-bottom: 3%;
 }
 .table{
     top:20px;

@@ -14,12 +14,12 @@
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">
                         <el-table-column prop="name" label="名称" width="150px"></el-table-column>
-                        <el-table-column prop="image_name" label="镜像名称" width="300px"></el-table-column>
-                        <el-table-column prop="image_url" label="镜像url" width="500px"></el-table-column>
+                        <el-table-column prop="image_name" label="镜像名称" ></el-table-column>
+                        <el-table-column prop="image_url" label="镜像url" ></el-table-column>
                         <el-table-column prop="status" label="状态"  style="width: 50px;">
                             <template slot-scope="scope">
                                 <el-tag style="size:smaller"
-                                :type=" scope.row.status  === 'Running' ? 'success' : 'danger'"
+                                :type=" scope.row.status  === 'Complete' ? 'success' : 'primary'"
                                 disable-transitions>{{ scope.row.status }}</el-tag>
                             </template>
                         </el-table-column>

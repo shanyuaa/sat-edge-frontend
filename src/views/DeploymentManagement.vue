@@ -22,19 +22,22 @@
                         
                         <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
                         <el-table-column prop="image_url" label="镜像url"  style="width: 300px;"></el-table-column>
+                        <el-table-column label="端口号"  style="width: 300px;">
+                            <template slot-scope="scope">
+                                <!-- 使用 v-for 循环渲染嵌套数组中的数据 -->
+                                <div v-for="(value, index) in scope.row.ports" :key="index">
+                                {{ value }}
+                                </div>
+                            </template>
+                        </el-table-column>
                         <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
-                        <el-table-column prop="operation" label="操作">
+                        <el-table-column label="操作">
                             <template slot-scope="scope">
                                 
                                 <el-button size="mini" type="text" @click="deleteDeployment(scope.row.name)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
-                                    <span class="el-dropdown-link">
-                                        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item @click="updateDeployment(scope.row.name)">修改配置</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                                <!-- TODO -->
+                                <!-- <el-button size="mini" type="text" @click="updateDeployment(scope.row)">修改配置</el-button> -->
+                                
                             </template>
                         </el-table-column>
                     </el-table>
@@ -99,8 +102,11 @@ export default {
                 }
             })
         },
-        updateDeployment(name){
-            
+        updateDeployment(deployment){
+            this.$router.push({
+                name:'updatedeployment',
+                params:{name:deployment.name, replicas:deployment.replicas, image_name:deployment.image_name, image_url:deployment.image_url}
+            })
         }
     },
     mounted(){

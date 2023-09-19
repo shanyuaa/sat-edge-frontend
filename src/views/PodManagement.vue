@@ -18,12 +18,12 @@
                                 <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template>
                             </el-table-column>
-                        <el-table-column prop="namespace" label="Namespace" width="150px">
+                        <el-table-column prop="namespace" label="Namespace">
                             <!-- <template slot-scope="scope">
                                 <el-button size="medium" type="text">{{ scope.row.namespace }}</el-button>
                             </template> -->
                         </el-table-column>
-                        <el-table-column prop="labels" label="labels" width="100px"></el-table-column>
+                        <el-table-column prop="labels" label="labels"></el-table-column>
                         <el-table-column prop="status" label="Status" width="100px">
                             <template slot-scope="scope">
                                 <el-tag
@@ -34,17 +34,11 @@
                         <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
                         <el-table-column prop="image_url" label="镜像url"  style="width: 200px;"></el-table-column>
                         <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
-                        <el-table-column prop="operation" label="操作">
+                        <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="deletePod(scope.row.name)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
-                                    <span class="el-dropdown-link">
-                                        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>修改配置</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                                <el-button size="mini" type="text" @click="gotoUpdatePod(scope.row.name)">修改配置</el-button>
+                                
                             </template>
                         </el-table-column>
                     </el-table>
@@ -90,12 +84,24 @@ export default {
         getAllPods(){
             this.$http.post('/pod/info').then(res =>{
                 console.log(res)
+                
                 this.tableData = res.data.data.pods
+                for(var i=0; i<this.tableData.length; i++){
+                    this.tableData[i].labels = JSON.stringify(this.tableData[i].labels)
+                }
+                
                 console.log(this.tableData)
             })
         },
         showEditCard(){
             this.EditCard = true
+        },
+        gotoUpdatePod(name){
+            console.log()
+            this.$router.push({
+                name:'updatepod',
+                params:{ name: name }
+            })
         },
         deletePod(name){
             console.log(name)

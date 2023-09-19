@@ -20,6 +20,10 @@ import VMManagement from '@/views/VMManagement.vue'
 import ServiceManagement from '@/views/ServiceManagement.vue'
 import AddJob from '@/views/AddJob.vue'
 import AddService from '@/views/AddService.vue'
+import AddImage from '@/views/AddImage.vue'
+import AddUser from '@/views/AddUser.vue'
+import UpdatePod from '@/views/UpdatePod.vue'
+import UpdateDeployment from '@/views/UpdateDeployment.vue'
 
 Vue.use(Router)
 
@@ -47,7 +51,8 @@ const router = new Router({
     {
       path: '/node',
       name: 'node',
-      component: EdgeNode
+      component: EdgeNode,
+      props:true
     },
     {
       path: '/addnode',
@@ -62,12 +67,14 @@ const router = new Router({
     {
       path: '/pod',
       name: 'pod',
-      component: PodManagement
+      component: PodManagement,
+      props:true
     },
     {
       path: '/nodeinfo',
       name: 'nodeinfo',
-      component: NodeInfo
+      component: NodeInfo,
+      props:true
     },
     {
       path: '/addpod',
@@ -77,7 +84,8 @@ const router = new Router({
     {
       path: '/deployment',
       name: 'deployment',
-      component: DeploymentManagement
+      component: DeploymentManagement,
+      props:true
     },
     {
       path: '/adddeployment',
@@ -133,6 +141,28 @@ const router = new Router({
       path:'/addservice',
       name: 'addservice',
       component: AddService
+    },
+    {
+      path:'/addimage',
+      name: 'addimage',
+      component: AddImage
+    },
+    {
+      path:'/adduser',
+      name: 'adduser',
+      component: AddUser
+    },
+    {
+      path:'/updatepod',
+      name: 'updatepod',
+      component: UpdatePod,
+      props:true
+    },
+    {
+      path:'/updatedeployment',
+      name: 'updatedeployment',
+      component: UpdateDeployment,
+      props:true
     },
   ]
 })

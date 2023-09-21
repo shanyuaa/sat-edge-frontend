@@ -45,7 +45,7 @@ export default {
     methods:{
         goBack(){
             this.$router.push({
-                name:'image'
+                name:'user'
             })
         },
         SubmitCreateUser(form){

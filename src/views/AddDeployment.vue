@@ -7,8 +7,8 @@
                 </div>
                 <div style="margin-top: 10px; margin-left: 20px;">
                     <el-breadcrumb separator-class="el-icon-arrow-right">
-                        <el-breadcrumb-item :to="{ path: '/pod' }">在线任务管理（Deployment）</el-breadcrumb-item>
-                        <el-breadcrumb-item>创建Deployment任务</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/deployment' }">在线任务管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>创建在线任务</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
             </el-header>
@@ -27,6 +27,9 @@
                     </el-form-item>
                     <el-form-item label="镜像url">
                         <el-input v-model="form.image_url"></el-input>
+                    </el-form-item>
+                    <el-form-item label="端口号">
+                        <el-input v-model="form.ports"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="SubmitCreatePod(form)">立即创建</el-button>
@@ -47,6 +50,7 @@ export default {
                 replicas: null,
                 image_name:'',
                 image_url: '',
+                ports:''
             }
         }
     },
@@ -60,6 +64,7 @@ export default {
             // var JsonData = JSON.stringify(form)
             // console.log(JsonData)
             form.replicas = parseInt(form.replicas) 
+            form.ports = (form.ports.split(',')).map(str => parseInt(str))
             this.$http.post('/deployment/create', form).then(res =>{
                 console.log(res)
                 console.log(form+'hhh')
@@ -69,6 +74,7 @@ export default {
                     this.form.replicas = '';
                     this.form.image_name = ''
                     this.form.image_url = ''
+                    this.form.ports = ''
                     this.$router.push({
                         name:'deployment'
                     })
@@ -78,6 +84,7 @@ export default {
                     this.form.replicas = '';
                     this.form.image_name = ''
                     this.form.image_url = ''
+                    this.form.ports = ''
                 }
                 
             })

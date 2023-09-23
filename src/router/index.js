@@ -24,6 +24,7 @@ import AddImage from '@/views/AddImage.vue'
 import AddUser from '@/views/AddUser.vue'
 import UpdatePod from '@/views/UpdatePod.vue'
 import UpdateDeployment from '@/views/UpdateDeployment.vue'
+import StreamingComputingTask from '@/views/StreamingComputingTask.vue'
 
 Vue.use(Router)
 
@@ -164,6 +165,11 @@ const router = new Router({
       component: UpdateDeployment,
       props:true
     },
+    {
+      path:'/streamingtask',
+      name:'streamingtask',
+      component: StreamingComputingTask
+    }
   ]
 })
 

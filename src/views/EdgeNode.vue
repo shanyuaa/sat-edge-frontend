@@ -8,12 +8,12 @@
                 <div class="wrapper">
                     <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">添加节点</el-button> -->
                     <span style="top: -10px; font-size: large;">节点列表</span>
-                    <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
+                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input>
+                    </el-input> -->
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%">
+                    <el-table :data="displayedData" stripe style="width: 100%">
                         <el-table-column prop="name" label="节点名称" width="150px">
                             <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="gotoNode(scope.row.name)">{{ scope.row.name }}</el-button>
@@ -35,10 +35,10 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage1"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="100">
+                    :total="datasize">
                     </el-pagination>
                 </div>
             </el-card>
@@ -50,36 +50,29 @@
 export default {
     data() {
         return{
-            currentPage1:1,
+           
             tableData: [
-                // {
-                //     name:"NPU",
-                //     ip:"",
-                //     create_time:"",
-                //     roles:["Worker"],
-                //     cpu_cores:12,
-                //     cpu_avaliable:12,
-                //     mem:"31322824",
-                //     mem_avaliable:"31322824"
-                // },{
-                //     name:"GPU",
-                //     ip:"",
-                //     create_time:"",
-                //     roles:["Worker"],
-                //     cpu_cores:12,
-                //     cpu_avaliable:12,
-                //     mem:"31322824",
-                //     mem_avaliable:"31322824"
-                // },
-            ]
+            
+            ],
+            displayedData:[], //当页展示的数据
+            pageSize:10,
+            currentPage1:1, //当前页码
+            datasize:0
         }
     },
     methods:{
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.pageSize = val;
+            this.updateDisplayedData(); // 重新加载数据
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.currentPage1 = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        updateDisplayedData(){
+            const startIndex = (this.currentPage1 - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.displayedData = this.tableData.slice(startIndex, endIndex);
         },
         toAddEdgeNode(){
             this.$router.push({
@@ -112,6 +105,8 @@ export default {
                     this.tableData.push(res.data.data.nodes[i])
                 }
                 console.log(this.tableData[0].name)
+                this.datasize = res.data.data.nodes.length
+                this.updateDisplayedData()
             })
         }
     },
@@ -126,21 +121,23 @@ export default {
 .interface{
   height: 100%;
   background-color: #F2F6FC;
-  position: fixed;
-  width: 90%;
+  width:100%;
 }
 
 .node-list{
-  position: relative;
-  width: 92%;
+    position: relative;
+  width: 96%;
   padding: 10px;
   top:30px;
   left:2%;
   right: 2%;
+  margin-bottom:5%;
+  min-height: 800px;
 }
 .table{
     top:20px;
     margin-bottom: 40px;
+    min-height: 600px;
 }
 .wrapper{
     display: flex;

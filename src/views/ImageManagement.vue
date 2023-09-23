@@ -8,12 +8,12 @@
                 <div class="wrapper">
 
                     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddImage">拉取镜像</el-button>
-                    <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
+                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input>
+                    </el-input> -->
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%">
+                    <el-table :data="displayedData" stripe style="width: 100%">
                         <!-- <el-table-column prop="name" label="Name" width="300px">
                             <template slot-scope="scope">
                                 <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
@@ -36,10 +36,10 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage1"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="100">
+                    :total="datasize">
                     </el-pagination>
                 </div>
             </el-card>
@@ -51,18 +51,35 @@
 export default {
     data() {
         return{
-            currentPage1:1,
+            displayedData:[], //当页展示的数据
+            pageSize:10,
+            currentPage1:1, //当前页码
+            datasize:0,
             tableData: [
 
             ]
         }
     },
     methods:{
-        
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        handleCurrentChange(val) {
+            this.currentPage1 = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        updateDisplayedData(){
+            const startIndex = (this.currentPage1 - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.displayedData = this.tableData.slice(startIndex, endIndex);
+        },
         getImageData(){
             this.$http.post('/image/info').then(res =>{
                 console.log(res)
                 this.tableData = res.data.data.images
+                this.datasize = res.data.data.images.length
+                this.updateDisplayedData()
             })
         },
         toAddImage(){
@@ -95,17 +112,19 @@ export default {
 }
 
 .job-list{
-  position: relative;
-  width: 92%;
-  padding: 0px;
+    position: relative;
+  width: 96%;
+  padding: 10px;
   top:30px;
   left:2%;
   right: 2%;
-  margin-bottom: 3%;
+  margin-bottom:5%;
+  min-height: 800px;
 }
 .table{
     top:20px;
     margin-bottom: 40px;
+    min-height: 600px;
 }
 .wrapper{
     display: flex;

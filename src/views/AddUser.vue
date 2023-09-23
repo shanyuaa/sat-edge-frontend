@@ -22,6 +22,12 @@
                     <el-form-item label="密码">
                         <el-input  v-model="form.password"></el-input>
                     </el-form-item>
+                    <el-form-item label="类型">
+                       <el-radio-group v-model="form.role" >
+                        <el-radio label="管理员"></el-radio>
+                        <el-radio label="普通用户" ></el-radio>
+                       </el-radio-group>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="SubmitCreateUser(form)">立即创建</el-button>
                         <el-button>取消</el-button>
@@ -38,7 +44,8 @@ export default {
         return{
             form: {
                 username: '',
-                password:''
+                password:'',
+                role:''
             }
         }
     },
@@ -50,7 +57,12 @@ export default {
         },
         SubmitCreateUser(form){
             var JsonData = JSON.stringify(form)
-           
+            console.log(JsonData)
+            if(JsonData.type === "管理员"){
+                form.role = 'admin'
+            }else{
+                form.role = 'guest'
+            }
             console.log(JsonData)
             this.$http.post('/user/create', form).then(res =>{
                 console.log(res)
@@ -58,7 +70,7 @@ export default {
                     this.$message.success('添加成功')
                     this.form.username = '';
                     this.form.password = ''
-                    
+                    this.form.type = ''
                     this.$router.push({
                         name:'user'
                     })
@@ -66,6 +78,7 @@ export default {
                     this.$message.error('添加失败')
                     this.form.username = '';
                     this.form.password = ''
+                    this.form.type = ''
                     
                 }
                 

@@ -53,7 +53,7 @@ export default {
     methods:{
         goBack(){
             this.$router.push({
-                name:'jod'
+                name:'job'
             })
         },
         SubmitCreateJob(form){

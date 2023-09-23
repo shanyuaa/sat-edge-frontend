@@ -87,7 +87,7 @@
                                 <div id="GPU_temperature_chart" style="width: 380px; height: 300px; margin-top: 40px; "></div>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane label="任务" name="first">{{ this.CpuSeconds }}</el-tab-pane>
+                        <el-tab-pane label="任务" name="first"><el-empty description="当前无任务"></el-empty></el-tab-pane>
                         <!-- <el-tab-pane label="设备" name="third">设备</el-tab-pane> -->
                     </el-tabs>
                 </template>
@@ -130,6 +130,11 @@ export default {
             this.$http.post('/node/query',{"name":this.name}).then(res =>{
                 
                 this.nodeInfo = res.data.data.information
+                if(this.nodeInfo.gpu){
+                    this.activeName = 'GPU_info'
+                }else{
+                    this.activeName = 'first'
+                }
                 
             })
         },
@@ -418,12 +423,14 @@ export default {
     },
     created() {
         console.log(this.name)
+        
         this.GPU_load_data = []
         this.GPU_load_data_time = []
         this.GPU_load_data_value = []
         this.get_gpu_load();
         this.get_gpu_temperature();
         this.getNodeInfo();
+        
         this.get_gpu_frequency_current();
         this.get_gpu_power_control_status();
         this.get_gpu_railgate_status();
@@ -476,6 +483,7 @@ export default {
   top:30px;
   left:2%;
   right: 2%;
+  bottom: 3%;
 }
 
 .NodeInfoCard2{
@@ -485,6 +493,7 @@ export default {
     margin-top:60px;
     left:2%;
     right: 2%;
+    margin-bottom:5%;
 }
 
 

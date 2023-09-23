@@ -7,12 +7,12 @@
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
                     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddService">创建服务</el-button>
-                    <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
+                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input>
+                    </el-input> -->
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%">
+                    <el-table :data="displayedData" stripe style="width: 100%">
                         <el-table-column prop="name" label="服务名称" width="300px"></el-table-column>
                         <el-table-column prop="selector" label="选择器" width="200px"></el-table-column>
                         <!-- <template slot-scope="scope" >
@@ -60,10 +60,10 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage1"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="100">
+                    :total="datasize">
                     </el-pagination>
                 </div>
             </el-card>
@@ -75,7 +75,10 @@
 export default {
     data() {
         return{
-            currentPage1:1,
+            displayedData:[], //当页展示的数据
+            pageSize:10,
+            currentPage1:1, //当前页码
+            datasize:0,
             tableData: [
                 // {
                 // name:'hh',
@@ -92,12 +95,27 @@ export default {
         }
     },
     methods:{
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        handleCurrentChange(val) {
+            this.currentPage1 = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        updateDisplayedData(){
+            const startIndex = (this.currentPage1 - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.displayedData = this.tableData.slice(startIndex, endIndex);
+        },
         getAllServices(){
             this.$http.post('/service/info').then(res=>{
                 console.log(res)
                 // this.tableData.push(res.data.data.services[0])
                 this.tableData = res.data.data.services
                 console.log(this.tableData)
+                this.datasize = res.data.data.services.length
+                this.updateDisplayedData()
             })
         },
         toAddService(){
@@ -132,16 +150,19 @@ export default {
 }
 
 .job-list{
-  position: relative;
-  width: 92%;
+    position: relative;
+  width: 96%;
   padding: 10px;
   top:30px;
   left:2%;
   right: 2%;
+  margin-bottom:5%;
+  min-height: 800px;
 }
 .table{
     top:20px;
     margin-bottom: 40px;
+    min-height: 600px;
 }
 .wrapper{
     display: flex;

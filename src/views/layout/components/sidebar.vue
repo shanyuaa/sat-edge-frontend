@@ -28,7 +28,10 @@
             <span slot="title">应用管理</span>
             <el-menu-item index="Deployment-management" @click="gotoDeploymentManagement">在线任务</el-menu-item>
             <el-menu-item index="Job-management" @click="gotoJobManagement">离线任务</el-menu-item>
+            <el-menu-item index="StreamingTask-management" @click="gotoStreamingTask">流式计算任务</el-menu-item>
           </el-submenu>
+
+          
 
           <el-menu-item index="image"  @click="gotoImageManagement">
             <span slot="title">镜像管理</span>
@@ -110,6 +113,11 @@ export default {
         gotoWebManagement(){
           this.$router.push({
             name:'service'
+          })
+        },
+        gotoStreamingTask(){
+          this.$router.push({
+            name:'streamingtask'
           })
         }
         

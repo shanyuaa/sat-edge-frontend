@@ -7,13 +7,13 @@
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
                     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建Pod</el-button>
-                    <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
+                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input>
+                    </el-input> -->
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%;">
-                        <el-table-column prop="name" label="名称" width="200px" >
+                    <el-table :data="displayedData" stripe style="width: 100%;">
+                        <el-table-column prop="name" label="名称"  >
                             <template slot-scope="scope" >
                                 <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template>
@@ -43,22 +43,21 @@
                         </el-table-column>
                     </el-table>
                 </div>
-                <div class="block">
+                <div class="block" style=" margin-bottom: 0px; left: 0; right: 0;">
                     <el-pagination
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage1"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-sizes="[5,10,15,20]"
+                    :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="100">
+                    
+                    :total="datasize">
                     </el-pagination>
                 </div>
             </el-card>
 
-            <el-card v-show="EditCard" shadow="hover">
-                11
-            </el-card>
+            
         </div>
     </div>
 </template>
@@ -68,14 +67,32 @@ export default {
     data() {
         return{
             EditCard:false,
-            currentPage1:1,
-            tableData: [{
+           
+            tableData: [{ //所有数据
 
                 },
-            ]
+            ],
+            displayedData:[], //当页展示的数据
+            pageSize:10,
+            currentPage1:1, //当前页码
+            datasize:0
+
         }
     },
     methods:{
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        handleCurrentChange(val) {
+            this.currentPage1 = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        updateDisplayedData(){
+            const startIndex = (this.currentPage1 - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.displayedData = this.tableData.slice(startIndex, endIndex);
+        },
         toAddEdgeNode(){
             this.$router.push({
                 name: 'addpod'
@@ -86,13 +103,15 @@ export default {
                 console.log(res)
                 
                 this.tableData = res.data.data.pods
+                this.datasize = res.data.data.pods.length
                 for(var i=0; i<this.tableData.length; i++){
                     this.tableData[i].labels = JSON.stringify(this.tableData[i].labels)
                 }
                 
-                console.log(this.tableData)
+                this.updateDisplayedData()
             })
         },
+       
         showEditCard(){
             this.EditCard = true
         },
@@ -125,26 +144,35 @@ export default {
 .interface{
   height: 100%;
   background-color: #F2F6FC;
-  position: fixed;
-  width: 90%;
+  width: 100%;
+  
+  top: 0px; /* 距离顶部的距离为0 */
+  left: 0; /* 距离左侧的距离为0 */
+  right: 0; /* 距离右侧的距离为0 */
+  bottom: 0; /* 距离底部的距离为0 */
+  
 }
 
 .job-list{
   position: relative;
-  width: 92%;
+  width: 96%;
   padding: 10px;
   top:30px;
   left:2%;
   right: 2%;
+  margin-bottom:5%;
+  min-height: 800px;
 }
 .table{
     top:20px;
     margin-bottom: 40px;
+    min-height: 600px;
 }
 .wrapper{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+   
 }
 .el-dropdown-link {
     cursor: pointer;
@@ -153,4 +181,6 @@ export default {
   .el-icon-arrow-down {
     font-size: 12px;
   }
+
+
 </style>

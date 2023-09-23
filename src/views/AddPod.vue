@@ -73,7 +73,7 @@ export default {
                     this.form.image_name = ''
                     this.form.image_url = ''
                     this.$router.push({
-                        name:'PodManagement'
+                        name:'pod'
                     })
                 }else if(res.data.status == '1'){
                     this.$message.error('添加失败')

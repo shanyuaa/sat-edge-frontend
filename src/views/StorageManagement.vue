@@ -7,9 +7,9 @@
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
                     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建存储卷</el-button>
-                    <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
+                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input>
+                    </el-input> -->
                 </div>
                 <div class="table">
                     <el-table :data="tableData" stripe style="width: 100%">

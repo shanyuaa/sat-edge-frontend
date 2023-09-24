@@ -26,16 +26,17 @@
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 
-                                <el-button size="mini" type="text" @click="deleteJob(scope.row.name)">删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
+                                <el-button v-if="role" size="mini" type="text" @click="deleteJob(scope.row.name)">删除</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="deleteJob(scope.row.name)" disabled>删除</el-button>
+                                <!-- <el-dropdown style="font-size: smaller; left: 5px;" >
                                     <span class="el-dropdown-link">
                                         下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
+                                        
                                         <el-dropdown-item>功能x</el-dropdown-item>
                                     </el-dropdown-menu>
-                                </el-dropdown>
+                                </el-dropdown> -->
                             </template>
                         </el-table-column>
                     </el-table>
@@ -57,9 +58,12 @@
 </template>
 
 <script>
+
+
 export default {
     data() {
         return{
+            role:false,
             displayedData:[], //当页展示的数据
             pageSize:10,
             currentPage1:1, //当前页码
@@ -74,6 +78,9 @@ export default {
         }
     },
     methods:{
+        IsAdmin(){
+            this.role = sessionStorage.getItem('role')=='admin' ? true:false
+        },
         handleSizeChange(val) {
             this.pageSize = val;
             this.updateDisplayedData(); // 重新加载数据
@@ -115,6 +122,9 @@ export default {
     mounted() {
         this.getAllJobs();
     },
+    created(){
+        this.IsAdmin()
+    }
 }
 </script>
 

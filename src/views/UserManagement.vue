@@ -20,8 +20,8 @@
                         <el-table-column prop="role" label="用户类型" width="300px"></el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="DeleteUser( scope.row.username)">删除</el-button>
-                                
+                                <el-button v-if="role" size="mini" type="text" @click="DeleteUser( scope.row.username)">删除</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="DeleteUser( scope.row.username)" disabled>删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -46,6 +46,7 @@
 export default {
     data() {
         return{
+            role:false,
             displayedData:[], //当页展示的数据
             pageSize:10,
             currentPage1:1, //当前页码
@@ -54,6 +55,9 @@ export default {
         }
     },
     methods:{
+        IsAdmin(){
+            this.role = sessionStorage.getItem('role')=='admin' ? true:false
+        },
         handleSizeChange(val) {
             this.pageSize = val;
             this.updateDisplayedData(); // 重新加载数据
@@ -95,6 +99,9 @@ export default {
     mounted() {
         this.getUserInfo();
     },
+    created(){
+        this.IsAdmin()
+    }
 }
 </script>
 

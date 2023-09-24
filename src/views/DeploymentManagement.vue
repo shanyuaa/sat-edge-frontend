@@ -34,9 +34,8 @@
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 
-                                <el-button size="mini" type="text" @click="deleteDeployment(scope.row.name)">删除</el-button>
-                                <!-- TODO -->
-                                <!-- <el-button size="mini" type="text" @click="updateDeployment(scope.row)">修改配置</el-button> -->
+                                <el-button v-if="role" size="mini" type="text" @click="deleteDeployment(scope.row.name)">删除</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="deleteDeployment(scope.row.name)" disabled>删除</el-button>
                                 
                             </template>
                         </el-table-column>
@@ -67,6 +66,7 @@ export default {
     inject: ['reload'],
     data() {
         return{
+            role:false,
             EditCard:false,
             displayedData:[], //当页展示的数据
             pageSize:10,
@@ -79,6 +79,9 @@ export default {
         }
     },
     methods:{
+        IsAdmin(){
+            this.role = sessionStorage.getItem('role')=='admin' ? true:false
+        },
         handleSizeChange(val) {
             this.pageSize = val;
             this.updateDisplayedData(); // 重新加载数据
@@ -129,6 +132,9 @@ export default {
     },
     mounted(){
         this.getAllDeployments()
+    },
+    created(){
+        this.IsAdmin()
     }
 }
 </script>

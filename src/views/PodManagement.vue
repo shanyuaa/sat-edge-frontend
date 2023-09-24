@@ -36,9 +36,10 @@
                         <!-- <el-table-column prop="log" label="日志"  style="width: 200px;"></el-table-column> -->
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="deletePod(scope.row.name)">删除</el-button>
-                                <el-button size="mini" type="text" @click="gotoUpdatePod(scope.row.name)">修改配置</el-button>
-                                
+                                <el-button v-if="role" size="mini" type="text" @click="deletePod(scope.row.name)">删除</el-button>
+                                <el-button v-if="role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)">修改配置</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="deletePod(scope.row.name)" disabled>删除</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)" disabled>修改配置</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -66,6 +67,7 @@
 export default {
     data() {
         return{
+            role:false,
             EditCard:false,
            
             tableData: [{ //所有数据
@@ -75,11 +77,14 @@ export default {
             displayedData:[], //当页展示的数据
             pageSize:10,
             currentPage1:1, //当前页码
-            datasize:0
+            datasize:0,
 
         }
     },
     methods:{
+        IsAdmin(){
+            this.role = sessionStorage.getItem('role')=='admin' ? true:false
+        },
         handleSizeChange(val) {
             this.pageSize = val;
             this.updateDisplayedData(); // 重新加载数据
@@ -103,11 +108,11 @@ export default {
                 console.log(res)
                 
                 this.tableData = res.data.data.pods
-                this.datasize = res.data.data.pods.length
+                
                 for(var i=0; i<this.tableData.length; i++){
                     this.tableData[i].labels = JSON.stringify(this.tableData[i].labels)
                 }
-                
+                this.datasize = res.data.data.pods.length
                 this.updateDisplayedData()
             })
         },
@@ -136,6 +141,9 @@ export default {
     },
     mounted(){
         this.getAllPods()
+    },
+    created(){
+        this.IsAdmin()
     }
 }
 </script>

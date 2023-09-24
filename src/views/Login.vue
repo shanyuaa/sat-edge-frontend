@@ -57,7 +57,8 @@
             if(res.data.status == 0){
               this.$message.success('登录成功')
               sessionStorage.setItem('name', res.data.data.token)
-              this.resetSetItem('name', 'admin');  
+              sessionStorage.setItem('role', res.data.data.role)
+              // this.resetSetItem('name', 'admin');  
                 this.$parent.ifLogin = true
                 this.$router.push({
                     name:'home'

@@ -99,10 +99,13 @@
 </template>
 
 <script>
+// import {VUE_APP_API_KEY} from '@/config'
+
 export default {
     props:['name'],
     data() {
         return{
+            // apiKey:VUE_APP_API_KEY,
             activeName: 'GPU_info',
             select_node:'',
             nodeInfo:[
@@ -424,6 +427,7 @@ export default {
     created() {
         console.log(this.name)
         
+        
         this.GPU_load_data = []
         this.GPU_load_data_time = []
         this.GPU_load_data_value = []
@@ -495,6 +499,7 @@ export default {
     right: 2%;
     margin-bottom:5%;
 }
+
 
 
 </style>

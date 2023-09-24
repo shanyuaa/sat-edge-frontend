@@ -6,28 +6,14 @@
         <div class="interface">
             <el-card class="user-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建任务</el-button> -->
-                    <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
-                        <el-button slot="append" icon="el-icon-search" ></el-button>
-                    </el-input> -->
+                    
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%">
-                        <!-- <el-table-column prop="name" label="Name" width="300px">
-                            <template slot-scope="scope">
-                                <el-button size="medium" type="text" @click="gotoNode(tableData[0].name)">{{ tableData[0].name }}</el-button>
-                            </template>
-                        </el-table-column> -->
-                        <el-table-column prop="logname" label="日志名称" width="400px">{{ tableData[0].logname }}</el-table-column>
-                        <!-- <el-table-column prop="type" label="用户类型"  style="width: 100px;">{{ tableData[0].type }}</el-table-column>
-                        <el-table-column prop="password" label="密码" width="300px">{{ tableData[0].password }}</el-table-column> -->
-                        <el-table-column prop="createtime" label="生成时间" width="500px">{{ tableData[0].createtime }}</el-table-column>
-                        <el-table-column prop="operation" label="操作">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                                <el-button size="mini" type="text" @click="">查看详细信息</el-button>
-                            </template>
-                        </el-table-column>
+                    <el-table :data="displayedData" stripe style="width: 100%">
+                        
+                        <el-table-column prop="route" label="访问记录" ></el-table-column>
+                        <el-table-column prop="time" label="生成时间" ></el-table-column>
+                        
                     </el-table>
                 </div>
                 <div class="block">
@@ -35,10 +21,10 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage1"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="100">
+                    :total="datasize">
                     </el-pagination>
                 </div>
             </el-card>
@@ -50,16 +36,42 @@
 export default {
     data() {
         return{
-            currentPage1:1,
-            tableData: [{
-                logname:'log111',
-                
-                createtime:'2023-8-22 19:30:23',
-                }]
+            role:false,
+
+            displayedData:[], //当页展示的数据
+            pageSize:10,
+            currentPage1:1, //当前页码
+            datasize:0,
+            tableData: []
         }
     },
     methods:{
-        
+        IsAdmin(){
+            this.role = sessionStorage.getItem('role')=='admin' ? true:false
+        },
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        handleCurrentChange(val) {
+            this.currentPage1 = val;
+            this.updateDisplayedData(); // 重新加载数据
+        },
+        updateDisplayedData(){
+            const startIndex = (this.currentPage1 - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.displayedData = this.tableData.slice(startIndex, endIndex);
+        },
+        getAllLogs(){
+            this.$http.post('/log/info').then(res =>{
+                this.tableData = res.data.data
+                this.datasize = res.data.data.length
+                this.updateDisplayedData()
+            })
+        }
+    },
+    mounted(){
+        this.getAllLogs()
     }
 }
 </script>
@@ -68,21 +80,24 @@ export default {
 .interface{
   height: 100%;
   background-color: #F2F6FC;
-  position: fixed;
-  width: 90%;
+  
+  width: 100%;
 }
 
 .user-list{
-  position: relative;
-  width: 92%;
+    position: relative;
+  width: 96%;
   padding: 10px;
   top:30px;
   left:2%;
   right: 2%;
+  margin-bottom:5%;
+  min-height: 800px;
 }
 .table{
     top:20px;
     margin-bottom: 40px;
+    min-height: 600px;
 }
 .wrapper{
     display: flex;

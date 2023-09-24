@@ -100,10 +100,10 @@ export default {
           name:"边缘节点",
           data:4
         },{
-          name:"Job任务",
+          name:"任务数量",
           data:1
         },{
-          name:"Pod对象",
+          name:"容器数量",
           data:5
         }
       ],
@@ -145,15 +145,27 @@ export default {
           name:'log'
         })
       }
+    },
+    getAllInfo(){
+      this.$http.post('/overview/info').then(res =>{
+        
+        this.resource_overview_list[0].data = res.data.data.job_count
+        this.resource_overview_list[1].data = res.data.data.node_count
+        this.resource_overview_list[2].data = res.data.data.pod_count
+      })
     }
     
   },
   mounted() {
-    
+    console.log(process.env)
+    this.getAllInfo()
   },
   watch:{
       
     },
+
+
+
 }
 </script>
 

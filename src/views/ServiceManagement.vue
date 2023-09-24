@@ -153,8 +153,8 @@ export default {
 .interface{
   height: 100%;
   background-color: #F2F6FC;
-  position: fixed;
-  width: 90%;
+  
+  width: 100%;
 }
 
 .job-list{

@@ -105,7 +105,7 @@ export default {
     props:['name'],
     data() {
         return{
-            // apiKey:VUE_APP_API_KEY,
+            gpu_api:'http://192.168.13.147:30268/',
             activeName: 'GPU_info',
             select_node:'',
             nodeInfo:[
@@ -154,8 +154,11 @@ export default {
 
         //GPU信息获取
         get_gpu_temperature(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_temperature').then(res =>{
+
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_temperature').then(res =>{
+                console.log("temperatureeeeee!!!!")
                 this.gpu_temperature = res.data.data.result[0].value[1]
+                console.log("temperature"+this.gpu_temperature)
             })
         },
 
@@ -163,54 +166,21 @@ export default {
             var timestamp_end = Date.parse(new Date().toUTCString())/1000;
             console.log(timestamp_end)
             var timestamp_start = timestamp_end - 600
-            let api = 'http://192.168.13.147:30268/api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
+            var api = this.gpu_api+'api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
             console.log(api)
             this.$http.get(api).then(res =>{
                 console.log(res)
                 this.GPU_load_data = res.data.data.result[0].values
-                    // 时间戳 
-                // if(this.GPU_load_data_time.length>=10){
-                //     this.GPU_load_data_time.shift()
-                //     this.GPU_load_data_value.shift()
-                //     console.log('更新了')
-                //     console.log(this.GPU_load_data_time)
-
-                //     var j = this.GPU_load_data.length-1
-                //     let timestamp = this.GPU_load_data[j][0]
-                //     let date = new Date(parseInt(timestamp)*1000);
-                //     let Year = date.getFullYear();
-                //     let Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-                //     let Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-                //     let Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-                //     let Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-                //     let Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
-                //     let  GMT =  Year + '-' + Moth + '-' + Day + '   '+ Hour +':'+ Minute  + ':' + Sechond;
-
-                //     this.GPU_load_data_time.push(GMT)
-                //     this.GPU_load_data_value.push(this.GPU_load_data[j][1])
-
-                //     console.log('test'+GMT)
-                // }else{
-                    // 创建临时数组来存储处理后的数据
+               
                     let tempData = [];
                     for(var i = 0; i < this.GPU_load_data.length; i = i+60){
                     
                     let timestamp = this.GPU_load_data[i][0]
-                    // let date = new Date(parseInt(timestamp)*1000);
-                    // let Year = date.getFullYear();
-                    // let Moth = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-                    // let Day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-                    // let Hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-                    // let Minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-                    // let Sechond = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
-                    // let  GMT =  Year + '-' + Moth + '-' + Day + '   '+ Hour +':'+ Minute  + ':' + Sechond;
+                  
 
                      // 将时间戳和数据添加到临时数组
                     tempData.push({ timestamp: timestamp, value: this.GPU_load_data[i][1] });
                     
-
-                    // this.GPU_load_data_time.push(GMT)
-                    // this.GPU_load_data_value.push(this.GPU_load_data[i][1])
                  }
                     // 根据时间戳升序排序数据
                     tempData.sort((a, b) => a.timestamp - b.timestamp);
@@ -247,17 +217,17 @@ export default {
             
         },
         get_gpu_frequency_current(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_frequency_current').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_frequency_current').then(res =>{
                 this.gpu_frequency_current = res.data.data.result[0].value[1]
             })
         },
         get_gpu_power_control_status(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_power_control_status').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_power_control_status').then(res =>{
                 this.gpu_power_control_status = res.data.data.result[0].value[1]
             })
         },
         get_gpu_railgate_status(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_railgate_status').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_railgate_status').then(res =>{
                 if(res.data.data.result[0].value[1] == 1){
                     this.gpu_railgate_status = '开启'
                 }else{
@@ -266,7 +236,7 @@ export default {
             })
         },
         get_gpu_tpc_pg_mask_status(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_tpc_pg_mask_status').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_tpc_pg_mask_status').then(res =>{
                 if(res.data.data.result[0].value[1] == 1){
                     this.gpu_tpc_pg_mask_status = '开启'
                 }else{
@@ -275,7 +245,7 @@ export default {
             })
         },
         get_gpu_3d_scaling_status(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=gpu_3d_scaling_status').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=gpu_3d_scaling_status').then(res =>{
                 if(res.data.data.result[0].value[1] == 1){
                     this.gpu_3d_scaling_status = '开启'
                 }else{
@@ -284,7 +254,7 @@ export default {
             })
         },
         get_gpu_process_info(){
-            this.$http.get('http://192.168.13.147:30268/api/v1/query?query=process_info').then(res =>{
+            this.$http.get(this.gpu_api+'api/v1/query?query=process_info').then(res =>{
                 console.log(res)
                 for(var i=0; i < res.data.data.result.length; i ++){
                     this.gpu_process_info.push({
@@ -411,7 +381,7 @@ export default {
                     },
                     data: [
                         {
-                        value: this.gpu_temperature
+                            value: this.gpu_temperature
                         }
                     ]
                     },
@@ -450,7 +420,9 @@ export default {
             this.drawChart_temperature();
         },1000);
         this.timer_load = setInterval(this.get_gpu_load, 5000);
+        this.timer_load = setInterval(this.get_gpu_temperature, 5000);
     },
+
     watch:{
       GPU_load_data_time:{
         handler(newVal){

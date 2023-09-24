@@ -29,24 +29,32 @@
                 <div class="wrapper">
                     <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">添加节点</el-button> -->
                     <span style="top: -10px; font-size: large;">流式计算节点列表</span>
-                    <el-button type="primary" icon="el-icon-refresh-right" @click="toAddJob">重新执行</el-button>
+                    <el-button type="primary" icon="el-icon-refresh-right" @click="ReloadTask">重新执行</el-button>
                 </div>
                 <div class="table">
-                    <el-table :data="tableData" stripe style="width: 100%">
+                    <el-table :data="displayedData" stripe style="width: 100%">
                         <el-table-column prop="name" label="节点名称" >
                             <!-- <template slot-scope="scope">
                                 <el-button size="mini" type="text" @click="gotoNode(scope.row.name)">{{ scope.row.name }}</el-button>
                             </template> -->
                         </el-table-column>
-                        <el-table-column prop="ip" label="IP" width="350px"></el-table-column>
                         <el-table-column prop="status" label="节点状态" width="350px">
                             <template slot-scope="scope">
                                 <el-tag style="size:smaller"
-                                :type=" scope.row.status  === 'running' ? 'primary' : 'success'"
-                                disable-transitions>{{ scope.row.status }}</el-tag>
+                                :type="{
+                                    'Running':'primary',
+                                    'Loading':'warning',
+                                    'Writing':'info',
+                                    'Finished':'success'
+                                }[scope.row.status]">{{ scope.row.status }}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="handlingcapacity" label="吞吐量" width="300px"></el-table-column>
+                        
+                        <el-table-column prop="handlingcapacity" label="吞吐量" width="300px">
+                            <template slot-scope="scope">
+                                {{ scope.row.load }} Mbps
+                            </template>
+                        </el-table-column>
                         
                     </el-table>
                 </div>
@@ -78,7 +86,6 @@ export default {
             tableData: [
             {
                 name:'k3s-master',
-                ip:'192.168.13.133',
                 status:'running',
                 handlingcapacity:'150Mbps'
             }
@@ -86,7 +93,9 @@ export default {
             displayedData:[], //当页展示的数据
             pageSize:10,
             currentPage1:1, //当前页码
-            datasize:0
+            datasize:0,
+            speed:0,
+            nodesnum:0
         }
     },
     methods:{
@@ -108,40 +117,26 @@ export default {
                 name:'addnode'
             })
         },
-        gotoNode(name){
-            // if(name =='NPU'){
-            //     this.$router.push({
-            //     name:'npuinfo'
-            //  })
-            // }else if(name =='GPU'){
-            //     this.$router.push({
-            //         name:'gpuinfo'
-            //     })
-            // }
-            this.$router.push({
-                name:'nodeinfo',
-                params:{ name: name }
-            })
-            
-        },
-        getNodes(){
-            this.$http.get('/node/info').then(res => {
-                console.log(res.data.data.nodes)
-                // this.tableData = res.data.data.nodes
-                for(var i = 0;i<res.data.data.nodes.length;i++){
-                    res.data.data.nodes[i].gpu = res.data.data.nodes[i].gpu ? '√':'×'
-                    res.data.data.nodes[i].npu = res.data.data.nodes[i].npu ? '√':'×'
-                    this.tableData.push(res.data.data.nodes[i])
-                }
-                console.log(this.tableData[0].name)
+        getNodeList(){
+            this.$http.post('/flow/info').then(res=>{
+                console.log(res)
+                this.tableData = res.data.data.nodes
                 this.datasize = res.data.data.nodes.length
+                this.speed = res.data.data.total
+                this.resource_overview_list[0].data = res.data.data.number
                 this.updateDisplayedData()
             })
         },
+        ReloadTask(){
+            this.$http.post('/flow/reset').then(res=>{
+                console.log(res)
+            })
+        },
+        
         drawChart_handling_capacity_total(){
             let newPromise = new Promise((resolve) => {
                 resolve()
-                })
+            })
             newPromise.then(() => {
                 // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
                 let myChart = this.$echarts.init(document.getElementById("handling_capacity_total"));
@@ -233,7 +228,7 @@ export default {
                         },
                         data: [
                             {
-                            value: 120
+                            value: this.speed
                             }
                         ]
                     }
@@ -243,14 +238,27 @@ export default {
             })
         },
     },
+    created(){
+        this.getNodeList()
+    },
     mounted() {
         setTimeout(() =>{
             // this.drawChart_nodes();
             // this.drawChart_load();
-            
             this.drawChart_handling_capacity_total();
         },1000);
-        
+        this.timer_load = setInterval(this.getNodeList, 1000);
+    },
+    watch:{
+      
+      speed:{
+        handler(newVal){
+          console.log(newVal);
+          //如果监听到了status的变化，那么就重新更新拓扑图，更新状态
+          // console.log(this.edgeStatus[2])
+          this.drawChart_handling_capacity_total()
+        },
+      }
     },
 }
 </script>

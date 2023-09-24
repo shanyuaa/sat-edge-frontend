@@ -178,6 +178,7 @@ export default {
         get_gpu_temperature(){
             this.$http.get('http://192.168.13.147:30039/api/v1/query?query=gpu_temperature').then(res =>{
                 this.gpu_temperature = res.data.data.result[0].value[1]
+                console.log("temperature"+this.gpu_temperature)
             })
         },
 
@@ -393,6 +394,7 @@ export default {
             this.drawChart_temperature();
         },1000);
         this.timer_load = setInterval(this.get_gpu_load, 5000);
+        this.timer_load = setInterval(this.get_gpu_temperature, 5000);
         
     },
     watch:{

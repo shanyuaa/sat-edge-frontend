@@ -35,7 +35,7 @@
                 
             </el-descriptions>
             <div>
-                <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button>
+                <!-- <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button> -->
             </div>
             </el-card>
             <el-card class="NodeInfoCard2">

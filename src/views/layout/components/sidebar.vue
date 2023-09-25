@@ -14,14 +14,14 @@
           <el-submenu index="resource">
             <span slot="title">资源管理</span>
             <el-menu-item index="edge-node" @click="gotoEdgeNode">节点</el-menu-item>
-            <el-menu-item index="storage" @click="gotoStorageManagement">存储</el-menu-item>
+            <!-- <el-menu-item index="storage" @click="gotoStorageManagement">存储</el-menu-item> -->
             <el-menu-item index="network" @click="gotoWebManagement">网络</el-menu-item>
           </el-submenu>
 
           <el-submenu index="virtual_resource">
             <span slot="title">虚拟资源</span>
             <el-menu-item index="Pod-management" @click="gotoPodManagement">容器</el-menu-item>
-            <el-menu-item index="VirtualMechine-management" @click="gotoVMManagement">虚拟机</el-menu-item>
+            <!-- <el-menu-item index="VirtualMechine-management" @click="gotoVMManagement">虚拟机</el-menu-item> -->
           </el-submenu>
 
           <el-submenu index="application">

@@ -7,8 +7,8 @@
                 </div>
                 <div style="margin-top: 10px; margin-left: 20px;">
                     <el-breadcrumb separator-class="el-icon-arrow-right">
-                        <el-breadcrumb-item :to="{ path: '/pod' }">Pod容器管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>创建Pod容器</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/pod' }">容器管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>创建容器</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
             </el-header>
@@ -22,9 +22,9 @@
                     <!-- <el-form-item label="命名空间">
                         <el-input v-model="form.namespace"></el-input>
                     </el-form-item> -->
-                    <!-- <el-form-item label="标签">
-                        <el-input v-model="form.labels"></el-input>
-                    </el-form-item> -->
+                    <el-form-item label="标签">
+                        <el-input v-model="form.labels" placeholder="请输入 {'xxx':'xxx'} 格式数据"></el-input>
+                    </el-form-item>
                     <el-form-item label="镜像">
                         <el-input v-model="form.image_name"></el-input>
                     </el-form-item>
@@ -48,9 +48,10 @@ export default {
             form: {
                 name: '',
                 namespace: '',
-                labels:{},
+                labels:'',
                 image_name:'',
                 image_url: '',
+                
             }
         }
     },
@@ -61,9 +62,12 @@ export default {
             })
         },
         SubmitCreatePod(form){
+            console.log(form.labels)
+            const label = JSON.parse(form.labels)
             var JsonData = JSON.stringify(form)
             console.log(JsonData)
-            this.$http.post('/pod/create', form).then(res =>{
+            let obj = {"name":form.name,"labels":label,"image_name":form.image_name, "image_url":form.image_url, "ports":[5000]}
+            this.$http.post('/pod/create', obj).then(res =>{
                 console.log(res)
                 if(res.data.status == '0'){
                     this.$message.success('添加成功')

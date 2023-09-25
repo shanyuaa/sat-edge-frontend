@@ -100,7 +100,7 @@ export default {
           name:"边缘节点",
           data:4
         },{
-          name:"任务数量",
+          name:"离线任务数量",
           data:1
         },{
           name:"容器数量",
@@ -118,6 +118,7 @@ export default {
           name:'login'
       })
     },
+
     gotoPage(name){
       
       if(name=='资源管理'){
@@ -149,8 +150,8 @@ export default {
     getAllInfo(){
       this.$http.post('/overview/info').then(res =>{
         
-        this.resource_overview_list[0].data = res.data.data.job_count
-        this.resource_overview_list[1].data = res.data.data.node_count
+        this.resource_overview_list[0].data = res.data.data.node_count
+        this.resource_overview_list[1].data = res.data.data.job_count
         this.resource_overview_list[2].data = res.data.data.pod_count
       })
     }

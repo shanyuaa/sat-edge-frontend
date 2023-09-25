@@ -12,9 +12,9 @@
                     </el-input> -->
                 </div>
                 <div class="table">
-                    <el-table :data="displayedData" stripe style="width: 100%">
+                    <el-table v-if="displayedData && displayedData.length > 0" :data="displayedData" stripe style="width: 100%">
                         <el-table-column prop="name" label="服务名称" width="300px"></el-table-column>
-                        <el-table-column prop="selector" label="选择器" width="200px"></el-table-column>
+                        <el-table-column prop="selector.app" label="容器标签" width="200px"></el-table-column>
                         <!-- <template slot-scope="scope" >
                             <el-table-column label="端口信息" :data="scope.row.ports">
                                
@@ -24,23 +24,73 @@
                                 
                          </el-table-column>  
                         </template> -->
-                        <el-table-column text-align="center" label="端口">
-                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="端口号" >
+                        <!-- <template slot-scope="scope"> -->
+                            <el-table-column text-align="center" label="端口">
+                            <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="端口号" >
                                 <template slot-scope="scope">
                                     <span>{{scope.row.ports[index].port}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="目标端口号" >
+                            <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="目标端口号" >
                                 <template slot-scope="scope">
                                     <span>{{scope.row.ports[index].target_port}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column text-align="center" v-for="(port, index) in tableData[0].ports" :key="index" label="协议" >
+                            <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="协议" >
                                 <template slot-scope="scope">
                                     <span>{{scope.row.ports[index].protocol}}</span>
                                 </template>
                             </el-table-column>
                         </el-table-column>
+                        <!-- </template> -->
+                        
+                        
+                        <el-table-column prop="operation" label="操作">
+                            <template slot-scope="scope">
+                                <el-button v-if="role" size="mini" type="text" @click="DeleteService(scope.row.name)">删除</el-button>
+                                <el-button v-if="!role" size="mini" type="text" @click="DeleteService(scope.row.name)" disabled>删除</el-button>
+                                <el-dropdown style="font-size: smaller; left: 5px;">
+                                    <el-dropdown-menu slot="dropdown">
+                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
+                                        <el-dropdown-item>功能x</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <el-table v-if="!(displayedData && displayedData.length > 0)" :data="displayedData" stripe style="width: 100%">
+                        <el-table-column prop="name" label="服务名称" width="300px"></el-table-column>
+                        <el-table-column prop="selector.app" label="容器标签" width="200px"></el-table-column>
+                        <!-- <template slot-scope="scope" >
+                            <el-table-column label="端口信息" :data="scope.row.ports">
+                               
+                                    <el-table-column label="端口" prop="port"></el-table-column>
+                                    <el-table-column label="目标端口" prop="target_port"></el-table-column>
+                                    <el-table-column label="协议" prop="protocol"></el-table-column>
+                                
+                         </el-table-column>  
+                        </template> -->
+                        <!-- <template slot-scope="scope"> -->
+                            <el-table-column text-align="center" label="端口">
+                            <!-- <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="端口号" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].port}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="目标端口号" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].target_port}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column text-align="center" v-for="(port, index) in displayedData[0].ports" :key="index" label="协议" >
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.ports[index].protocol}}</span>
+                                </template>
+                            </el-table-column> -->
+                        </el-table-column>
+                        <!-- </template> -->
+                        
                         
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">

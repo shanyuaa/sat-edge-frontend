@@ -1,12 +1,12 @@
 <template>
     <div>
         <el-container>
-            <el-header style="height: 60px; padding: 15px; width: 100%;">Pod容器管理</el-header>
+            <el-header style="height: 60px; padding: 15px; width: 100%;">容器管理</el-header>
         </el-container>
         <div class="interface">
             <el-card class="job-list" style="display: inline-block;">
                 <div class="wrapper">
-                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建Pod</el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="toAddEdgeNode">创建容器</el-button>
                     <!-- <el-input v-model="SearchNode" placeholder="按名称搜索" style="width: 400px;">
                         <el-button slot="append" icon="el-icon-search" ></el-button>
                     </el-input> -->
@@ -141,6 +141,10 @@ export default {
     },
     mounted(){
         this.getAllPods()
+        setTimeout(() =>{
+            this.getAllPods()
+            
+        },5000);
     },
     created(){
         this.IsAdmin()

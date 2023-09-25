@@ -142,7 +142,7 @@ export default {
                 let myChart = this.$echarts.init(document.getElementById("handling_capacity_total"));
                 let option = {
                 title: {
-                    text: "流速",
+                    text: "数据吞吐速率",
                     left: 'center',
                     top: '0px'
                 },
@@ -250,7 +250,6 @@ export default {
         this.timer_load = setInterval(this.getNodeList, 1000);
     },
     watch:{
-      
       speed:{
         handler(newVal){
           console.log(newVal);

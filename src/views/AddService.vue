@@ -19,14 +19,14 @@
                     <el-form-item label="任务名称">
                         <el-input v-model="form.name" style="width: 900px;"></el-input>
                     </el-form-item>
-                    <el-form-item label="选择器">
+                    <el-form-item label="容器标签">
                         <el-input v-model="form.selector" style="width: 900px;"></el-input>
                     </el-form-item>
                     <el-form-item label="service端口号" >
-                        <el-input v-model="form.ports[0].port" style="width: 900px;"></el-input>
+                        <el-input v-model="form.ports[0].port" style="width: 900px;" placeholder="端口号范围30000-32767"></el-input>
                     </el-form-item>
-                    <el-form-item label="pod端口号">
-                        <el-input v-model="form.ports[0].target_port" style="width: 900px;"></el-input>
+                    <el-form-item label="容器端口号">
+                        <el-input v-model="form.ports[0].target_port" style="width: 900px;" ></el-input>
                     </el-form-item>
                     <el-form-item label="协议">
                         <el-input v-model="form.ports[0].protocol" style="width: 900px;"></el-input>
@@ -61,7 +61,7 @@ export default {
     methods:{
         goBack(){
             this.$router.push({
-                name:'job'
+                name:'service'
             })
         },
         SubmitCreateService(form){

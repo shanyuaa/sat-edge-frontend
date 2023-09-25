@@ -14,14 +14,19 @@
                 <div class="table">
                     <el-table :data="displayedData" stripe style="width: 100%;">
                         <el-table-column prop="name" label="名称" width="200px" >
-                            <template slot-scope="scope" >
-                                <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button>
-                            </template>
+                            
+                                <!-- <el-button size="medium" type="text" @click="gotoPod(scope.row.name)">{{ scope.row.name }}</el-button> -->
+                            
                             </el-table-column>
                         <el-table-column prop="replicas" label="副本数" width="100px"></el-table-column>
                         
                         <el-table-column prop="image_name" label="镜像名称"  style="width: 200px;"></el-table-column>
                         <el-table-column prop="image_url" label="镜像url"  style="width: 300px;"></el-table-column>
+                        <el-table-column label="状态"  style="width: 300px;">
+                            <el-tag style="size:smaller"
+                                type="primary"
+                                disable-transitions>Running</el-tag>
+                        </el-table-column>
                         <el-table-column label="端口号"  style="width: 300px;">
                             <template slot-scope="scope">
                                 <!-- 使用 v-for 循环渲染嵌套数组中的数据 -->

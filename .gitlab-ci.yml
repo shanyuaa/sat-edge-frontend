@@ -20,6 +20,7 @@ build:
     - docker rmi fe:pipe-$CI_PIPELINE_ID
     - docker rmi harbor.act.buaa.edu.cn/sat-edge-manager/fe:pipe-$CI_PIPELINE_ID
     - docker rmi harbor.act.buaa.edu.cn/sat-edge-manager/fe
+    - docker image prune -f
 
 
 deploy:

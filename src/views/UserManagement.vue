@@ -16,7 +16,7 @@
                         <el-table-column prop="username" label="用户名称" width="200px"></el-table-column>
                         <!-- <el-table-column prop="type" label="用户类型"  style="width: 100px;">{{ tableData[0].type }}</el-table-column> -->
                         <el-table-column prop="password" label="密码" width="300px"></el-table-column>
-                        <el-table-column  label="创建时间" width="300px">-</el-table-column>
+                        
                         <el-table-column prop="role" label="用户类型" width="300px"></el-table-column>
                         <el-table-column prop="operation" label="操作">
                             <template slot-scope="scope">

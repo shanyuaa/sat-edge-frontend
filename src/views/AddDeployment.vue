@@ -77,7 +77,7 @@ export default {
       },
       loadAll(){
         return[
-            {"value":"frontend"},
+            {"value":"fe"},
             {"value":"nginx"}
         ]
       },

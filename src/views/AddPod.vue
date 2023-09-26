@@ -80,9 +80,10 @@ export default {
       },
       loadAll(){
         return[
-            {"value":"python"},
+            {"value":"HW-py"},
+            {"value":"fe"},
             {"value":"pi"},
-            {"value":"frontend"}
+            {"value":"nginx"}
         ]
       },
         goBack(){

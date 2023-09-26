@@ -70,7 +70,7 @@ export default {
       },
       loadAll(){
         return[
-            {"value":"HW-py"},
+            {"value":"hw-py"},
             {"value":"pi"}
         ]
       },

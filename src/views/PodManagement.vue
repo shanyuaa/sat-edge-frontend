@@ -24,10 +24,10 @@
                             </template> -->
                         </el-table-column>
                         <el-table-column prop="labels" label="labels"></el-table-column>
-                        <el-table-column prop="status" label="Status" width="100px">
+                        <el-table-column prop="status" label="Status" width="150px">
                             <template slot-scope="scope">
                                 <el-tag
-                                :type="scope.row.status === 'Running' ? 'primary' : 'danger'"
+                                :type="scope.row.status === 'Running' ? 'primary' : ('Succeeded' ? 'success':'warning')"
                                 disable-transitions>{{scope.row.status}}</el-tag>
                             </template>
                         </el-table-column>
@@ -37,9 +37,9 @@
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button v-if="role" size="mini" type="text" @click="deletePod(scope.row.name)">删除</el-button>
-                                <el-button v-if="role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)">修改配置</el-button>
+                                <!-- <el-button v-if="role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)">修改配置</el-button> -->
                                 <el-button v-if="!role" size="mini" type="text" @click="deletePod(scope.row.name)" disabled>删除</el-button>
-                                <el-button v-if="!role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)" disabled>修改配置</el-button>
+                                <!-- <el-button v-if="!role" size="mini" type="text" @click="gotoUpdatePod(scope.row.name)" disabled>修改配置</el-button> -->
                             </template>
                         </el-table-column>
                     </el-table>

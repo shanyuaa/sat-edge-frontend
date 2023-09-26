@@ -24,7 +24,12 @@
                         <el-table-column prop="roles" label="节点类型" width="100px"></el-table-column>
                         <el-table-column prop="cpu_cores" label="CPU核心数" width="100px"></el-table-column>
                         <!-- <el-table-column prop="cpu_avaliable" label="CPU空闲数" width="100px"></el-table-column> -->
-                        <el-table-column prop="memory" label="内存"></el-table-column>
+
+                        <el-table-column prop="memory" label="内存">
+                            <template slot-scope="scope">
+                                {{ scope.row.memory }} G
+                            </template>
+                        </el-table-column>
                         <!-- <el-table-column prop="memory_avaliable" label="可用内存" ></el-table-column> -->
                         <el-table-column prop="disk" label="存储容量" width="100px">
                             <template slot-scope="scope">

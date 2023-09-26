@@ -21,6 +21,14 @@
                 <el-descriptions-item label="CPU架构">{{ nodeInfo.labels['beta.kubernetes.io/arch'] }}</el-descriptions-item>
                 <el-descriptions-item label="创建时间">{{ nodeInfo.create_time }}</el-descriptions-item>
                 <el-descriptions-item label="操作系统">{{nodeInfo.labels['beta.kubernetes.io/os']}}</el-descriptions-item>
+                <el-descriptions-item label="内存总量">{{mem_total}} G</el-descriptions-item>
+                <el-descriptions-item label="内存使用量">{{mem_used}} G</el-descriptions-item>
+                <el-descriptions-item label="内存使用率">{{mem_rate}} %</el-descriptions-item>
+                <el-descriptions-item label="磁盘总量">{{disk_total}} G</el-descriptions-item>
+                <el-descriptions-item label="磁盘剩余量">{{disk_last}} G</el-descriptions-item>
+                <el-descriptions-item label="磁盘使用率">{{disk_rate}} %</el-descriptions-item>
+                <el-descriptions-item label="CPU使用率">{{cpu_rate}} %</el-descriptions-item>
+
                 
                 <el-descriptions-item label="GPU" v-if="nodeInfo.gpu">
                     <el-tag style="size:smaller"
@@ -105,6 +113,7 @@ export default {
     props:['name'],
     data() {
         return{
+            trimmedName:'',
             gpu_api:'http://192.168.13.147:30268/',
             activeName: 'GPU_info',
             select_node:'',
@@ -125,10 +134,101 @@ export default {
             gpu_railgate_status:'',
             gpu_tpc_pg_mask_status:'',
             gpu_3d_scaling_status:'',
-            gpu_process_info:[]
+            gpu_process_info:[],
+
+            mem_total:'',
+            mem_used:'',
+            mem_rate:'',
+
         }
     },
     methods:{
+        getProData(){
+            if (this.name.length >= 2) {
+                this.trimmedName = this.name.slice(0, -2);
+                console.log(this.trimmedName)
+                var api = this.gpu_api+'api/v1/query?query=node_memory_MemTotal_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D'
+                this.$http.get(api).then(res =>{
+                    console.log(res)
+                    this.mem_total = (res.data.data.result[0].value[1] / 1073741824).toString()
+                    if(this.mem_total.length >= 14){
+                        this.mem_total = this.mem_total.slice(0,-14)
+                    }
+                })
+                var api_mem_used = this.gpu_api+'api/v1/query?query=node_memory_MemTotal_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D%20-%20node_memory_MemAvailable_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D'
+                this.$http.get(api_mem_used).then(res =>{
+                    this.mem_used = (res.data.data.result[0].value[1] / 1073741824).toString()
+                    if(this.mem_used.length >= 13){
+                        this.mem_used = this.mem_used.slice(0,-13)
+                    }
+                })
+                var api_mem_rate = this.gpu_api +'api/v1/query?query=(node_memory_MemTotal_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D%20-%20node_memory_MemAvailable_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D)%20%2F%20node_memory_MemTotal_bytes%7Binstance%3D%22'+this.trimmedName+'%22%7D%20*%20100'
+                this.$http.get(api_mem_rate).then(res=>{
+                    this.mem_rate = res.data.data.result[0].value[1]
+                    if(this.mem_rate.length >= 12){
+                        this.mem_rate = this.mem_rate.slice(0,-12)
+                    }
+                   
+                })
+                if(this.trimmedName.includes('orin') || this.trimmedName.includes('tx2')){
+                    var api_disk_total = this.gpu_api+'api/v1/query?query=node_filesystem_size_bytes{device="/dev/mmcblk0p1",instance="'+this.trimmedName+'"}'
+                    this.$http.get(api_disk_total).then(res=>{
+                        this.disk_total = (res.data.data.result[0].value[1]/ 1073741824).toString()
+                        if(this.disk_total.length >= 8){
+                        this.disk_total = this.disk_total.slice(0,-8)
+                    }
+                    })
+                    var api_disk_last = this.gpu_api + 'api/v1/query?query=node_filesystem_avail_bytes{device="/dev/mmcblk0p1",instance="'+this.trimmedName+'"}'
+                    this.$http.get(api_disk_last).then(res=>{
+                        this.disk_last = (res.data.data.result[0].value[1]/ 1073741824).toString()
+                        if(this.disk_last.length >= 8){
+                        this.disk_last = this.disk_last.slice(0,-8)
+                    }
+                    })
+                    var api_disk_rate = this.gpu_api + 'api/v1/query?query=(1%20-%20(node_filesystem_avail_bytes{device="/dev/mmcblk0p1",instance="'+this.trimmedName+'"}%20/%20node_filesystem_size_bytes{device="/dev/mmcblk0p1",instance="'+this.trimmedName+'"}))%20*%20100'
+                    this.$http.get(api_disk_rate).then(res=>{
+                        this.disk_rate = res.data.data.result[0].value[1]
+                        if(this.disk_rate.length >= 12){
+                            this.disk_rate = this.disk_rate.slice(0,-11)
+                    }
+                    })
+                
+                }else{
+                    var api_disk_total = this.gpu_api + 'api/v1/query?query=node_filesystem_size_bytes%7Binstance%3D%22'+this.trimmedName+'%22%2C%20device%3D%22%2Fdev%2Fmapper%2Fopeneuler-home%22%7D'
+                    this.$http.get(api_disk_total).then(res=>{
+                        this.disk_total = (res.data.data.result[0].value[1]/ 1073741824).toString()
+                        if(this.disk_total.length >= 8){
+                        this.disk_total = this.disk_total.slice(0,-8)
+                    }
+                    })
+                    var api_disk_last = this.gpu_api + 'api/v1/query?query=node_filesystem_size_bytes%7Binstance%3D%22'+this.trimmedName+'%22%2C%20device%3D%22%2Fdev%2Fmapper%2Fopeneuler-home%22%7D%20-%20node_filesystem_avail_bytes%7Binstance%3D%22'+this.trimmedName+'%22%2C%20device%3D%22%2Fdev%2Fmapper%2Fopeneuler-home%22%7D'
+                    this.$http.get(api_disk_last).then(res=>{
+                        this.disk_last = (res.data.data.result[0].value[1]/ 1073741824).toString()
+                        if(this.disk_last.length >= 8){
+                        this.disk_last = this.disk_last.slice(0,-8)
+                    }
+                    })
+                    var api_disk_rate = this.gpu_api + 'api/v1/query?query=(1%20-%20(node_filesystem_avail_bytes%7Binstance%3D%22'+this.trimmedName+'%22%2C%20device%3D%22%2Fdev%2Fmapper%2Fopeneuler-home%22%7D%20/%20node_filesystem_size_bytes%7Binstance%3D%22'+this.trimmedName+'%22%2C%20device%3D%22%2Fdev%2Fmapper%2Fopeneuler-home%22%7D))%20*%20100'
+                    this.$http.get(api_disk_rate).then(res=>{
+                        this.disk_rate = res.data.data.result[0].value[1]
+                        if(this.disk_rate.length >= 11){
+                            this.disk_rate = this.disk_rate.slice(0,-11)
+                    }
+                    })
+                }
+                var api_cpu_rate = this.gpu_api+'api/v1/query?query=100%20-%20(avg%20by%20(instance)%20(irate(node_cpu_seconds_total%7Binstance%3D%22'+this.trimmedName+'%22%2C%20mode%3D%22idle%22%7D%5B5m%5D))%20%2B%20avg%20by%20(instance)%20(irate(node_cpu_seconds_total%7Binstance%3D%22'+this.trimmedName+'%22%2C%20mode%3D%22iowait%22%7D%5B5m%5D)))%20*%20100'
+                this.$http.get(api_cpu_rate).then(res=>{
+                    this.cpu_rate = res.data.data.result[0].value[1]
+                    if(this.cpu_rate.length >= 12){
+                            this.cpu_rate = this.cpu_rate.slice(0,-12)
+                    }
+                })
+            
+            
+            
+            }
+            
+        },
         getNodeInfo(){
             this.$http.post('/node/query',{"name":this.name}).then(res =>{
                 
@@ -156,20 +256,20 @@ export default {
         get_gpu_temperature(){
 
             this.$http.get(this.gpu_api+'api/v1/query?query=gpu_temperature').then(res =>{
-                console.log("temperatureeeeee!!!!")
+                
                 this.gpu_temperature = res.data.data.result[0].value[1]
-                console.log("temperature"+this.gpu_temperature)
+                
             })
         },
 
         get_gpu_load(){
             var timestamp_end = Date.parse(new Date().toUTCString())/1000;
-            console.log(timestamp_end)
+           
             var timestamp_start = timestamp_end - 600
             var api = this.gpu_api+'api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
-            console.log(api)
+           
             this.$http.get(api).then(res =>{
-                console.log(res)
+                
                 this.GPU_load_data = res.data.data.result[0].values
                
                     let tempData = [];
@@ -184,7 +284,7 @@ export default {
                  }
                     // 根据时间戳升序排序数据
                     tempData.sort((a, b) => a.timestamp - b.timestamp);
-                    console.log("进入tempData"+tempData)
+                   
 
                     // 移除最旧的时间戳和对应的值
                     if (this.GPU_load_data_time.length + tempData.length >= 10) {
@@ -208,7 +308,7 @@ export default {
                         this.GPU_load_data_value.push(item.value);
                     });
 
-                    console.log("注意！！！"+this.GPU_load_data_time)
+                    
 
                 // }
                 
@@ -255,7 +355,7 @@ export default {
         },
         get_gpu_process_info(){
             this.$http.get(this.gpu_api+'api/v1/query?query=process_info').then(res =>{
-                console.log(res)
+               
                 for(var i=0; i < res.data.data.result.length; i ++){
                     this.gpu_process_info.push({
                         command:res.data.data.result[i].metric.command,
@@ -404,7 +504,7 @@ export default {
         this.get_gpu_load();
         this.get_gpu_temperature();
         this.getNodeInfo();
-        
+        this.getProData();
         this.get_gpu_frequency_current();
         this.get_gpu_power_control_status();
         this.get_gpu_railgate_status();
@@ -413,6 +513,7 @@ export default {
         this.get_gpu_process_info();
     },
     mounted() {
+        
         setTimeout(() =>{
             // this.drawChart_nodes();
             // this.drawChart_load();

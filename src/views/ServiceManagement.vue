@@ -96,12 +96,7 @@
                             <template slot-scope="scope">
                                 <el-button v-if="role" size="mini" type="text" @click="DeleteService(scope.row.name)">删除</el-button>
                                 <el-button v-if="!role" size="mini" type="text" @click="DeleteService(scope.row.name)" disabled>删除</el-button>
-                                <el-dropdown style="font-size: smaller; left: 5px;">
-                                    <el-dropdown-menu slot="dropdown">
-                                        <!-- <el-dropdown-item>加入容器集群</el-dropdown-item> -->
-                                        <el-dropdown-item>功能x</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                                
                             </template>
                         </el-table-column>
                     </el-table>

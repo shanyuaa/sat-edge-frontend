@@ -23,11 +23,15 @@
                         <el-input v-model="form.back_off_limit"></el-input>
                     </el-form-item>
                     <el-form-item label="镜像名称">
-                        <el-input v-model="form.image_name"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        v-model="form.image_name"
+                        :fetch-suggestions="querySearch"
+                        placeholder="请选择镜像"
+                        @select="handleSelect"
+                        ></el-autocomplete>
                     </el-form-item>
-                    <el-form-item label="镜像url">
-                        <el-input v-model="form.image_url"></el-input>
-                    </el-form-item>
+                    
                     <el-form-item>
                         <el-button type="primary" @click="SubmitCreateJob(form)">立即创建</el-button>
                         <el-button>取消</el-button>
@@ -46,17 +50,37 @@ export default {
                 name: '',
                 back_off_limit: '',
                 image_name:'',
-                image_url:''
             }
         }
     },
     methods:{
+        handleSelect(item) {
+        this.form.image_name = item.value;
+      },
+        querySearch(queryString, cb) {
+        var images = this.images;
+        var results = queryString ? images.filter(this.createFilter(queryString)) : images;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (images) => {
+          return (images.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadAll(){
+        return[
+            {"value":"HW-py"},
+            {"value":"pi"}
+        ]
+      },
         goBack(){
             this.$router.push({
                 name:'job'
             })
         },
         SubmitCreateJob(form){
+            console.log(form.image_name)
             var JsonData = JSON.stringify(form)
             this.form.back_off_limit = parseInt(this.form.back_off_limit)
             console.log(JsonData)
@@ -67,7 +91,7 @@ export default {
                     this.form.name = '';
                     this.form.back_off_limit = ''
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                    
                     this.$router.push({
                         name:'job'
                     })
@@ -76,12 +100,15 @@ export default {
                     this.form.name = '';
                     this.form.back_off_limit = ''
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                   
                 }
                 
             })
         }
         
+    },
+    mounted(){
+        this.images = this.loadAll()
     }
 }
 </script>

@@ -23,11 +23,17 @@
                         <el-input v-model="form.replicas"></el-input>
                     </el-form-item>
                     <el-form-item label="镜像">
-                        <el-input v-model="form.image_name"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        v-model="form.image_name"
+                        :fetch-suggestions="querySearch"
+                        placeholder="请选择镜像"
+                        @select="handleSelect"
+                        ></el-autocomplete>
                     </el-form-item>
-                    <el-form-item label="镜像url">
+                    <!-- <el-form-item label="镜像url">
                         <el-input v-model="form.image_url"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="端口号">
                         <el-input v-model="form.ports"></el-input>
                     </el-form-item>
@@ -49,18 +55,39 @@ export default {
                 name: '',
                 replicas: null,
                 image_name:'',
-                image_url: '',
+                
                 ports:''
             }
         }
     },
     methods:{
+        handleSelect(item) {
+        this.form.image_name = item.value;
+      },
+        querySearch(queryString, cb) {
+        var images = this.images;
+        var results = queryString ? images.filter(this.createFilter(queryString)) : images;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (images) => {
+          return (images.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadAll(){
+        return[
+            {"value":"frontend"},
+            {"value":"nginx"}
+        ]
+      },
         goBack(){
             this.$router.push({
                 name:'deployment'
             })
         },
         SubmitCreatePod(form){
+            
             // var JsonData = JSON.stringify(form)
             // console.log(JsonData)
             form.replicas = parseInt(form.replicas) 
@@ -73,7 +100,7 @@ export default {
                     this.form.name = '';
                     this.form.replicas = '';
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                    
                     this.form.ports = ''
                     this.$router.push({
                         name:'deployment'
@@ -83,13 +110,16 @@ export default {
                     this.form.name = '';
                     this.form.replicas = '';
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                    
                     this.form.ports = ''
                 }
                 
             })
         }
         
+    },
+    mounted(){
+        this.images = this.loadAll()
     }
 }
 </script>

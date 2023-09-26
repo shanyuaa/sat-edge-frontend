@@ -26,8 +26,12 @@
                         <el-table-column prop="cpu_avaliable" label="CPU空闲数" width="100px"></el-table-column>
                         <el-table-column prop="memory" label="内存"></el-table-column>
                         <el-table-column prop="memory_avaliable" label="可用内存" ></el-table-column>
-                        <el-table-column prop="memory_avaliable" label="可用内存" ></el-table-column>
                         <el-table-column prop="disk" label="存储容量" width="100px">
+                            <template slot-scope="scope">
+                                {{ scope.row.disk }} G
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="disk" label="可用存储容量" width="160px">
                             <template slot-scope="scope">
                                 {{ scope.row.disk }} G
                             </template>

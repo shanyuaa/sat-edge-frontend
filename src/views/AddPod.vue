@@ -26,11 +26,18 @@
                         <el-input v-model="form.labels" placeholder="请输入 {'xxx':'xxx'} 格式数据"></el-input>
                     </el-form-item>
                     <el-form-item label="镜像">
-                        <el-input v-model="form.image_name"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        v-model="form.image_name"
+                        :fetch-suggestions="querySearch"
+                        placeholder="请输入内容"
+                        @select="handleSelect"
+                        ></el-autocomplete>
+                        <!-- <el-input v-model="form.image_name"></el-input> -->
                     </el-form-item>
-                    <el-form-item label="镜像url">
+                    <!-- <el-form-item label="镜像url">
                         <el-input v-model="form.image_url"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" @click="SubmitCreatePod(form)">立即创建</el-button>
                         <el-button>取消</el-button>
@@ -50,32 +57,55 @@ export default {
                 namespace: '',
                 labels:'',
                 image_name:'',
-                image_url: '',
+               
                 
-            }
+            },
+            images:[]
         }
     },
     methods:{
+        handleSelect(item) {
+        this.form.image_name = item.value;
+      },
+        querySearch(queryString, cb) {
+        var images = this.images;
+        var results = queryString ? images.filter(this.createFilter(queryString)) : images;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (images) => {
+          return (images.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      loadAll(){
+        return[
+            {"value":"python"},
+            {"value":"pi"},
+            {"value":"frontend"}
+        ]
+      },
         goBack(){
             this.$router.push({
                 name:'pod'
             })
         },
         SubmitCreatePod(form){
+            console.log(form.image_name)
             console.log(form.labels)
             const label = JSON.parse(form.labels)
             var JsonData = JSON.stringify(form)
             console.log(JsonData)
-            let obj = {"name":form.name,"labels":label,"image_name":form.image_name, "image_url":form.image_url, "ports":[5000]}
+            let obj = {"name":form.name,"labels":label,"image_name":form.image_name, "ports":[5000]}
             this.$http.post('/pod/create', obj).then(res =>{
                 console.log(res)
                 if(res.data.status == '0'){
                     this.$message.success('添加成功')
                     this.form.name = '';
                     this.form.namespace = ''
-                    this.form.labels = {}
+                    this.form.labels = ''
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                    
                     this.$router.push({
                         name:'pod'
                     })
@@ -83,14 +113,17 @@ export default {
                     this.$message.error('添加失败')
                     this.form.name = '';
                     this.form.namespace = ''
-                    this.form.labels = {}
+                    this.form.labels = ''
                     this.form.image_name = ''
-                    this.form.image_url = ''
+                    
                 }
                 
             })
         }
         
+    },
+    mounted(){
+        this.images = this.loadAll()
     }
 }
 </script>

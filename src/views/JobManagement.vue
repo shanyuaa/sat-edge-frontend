@@ -17,13 +17,13 @@
                         <el-table-column prop="image_name" label="镜像名称" ></el-table-column>
                         <el-table-column prop="image_url" label="镜像url" ></el-table-column>
                         <el-table-column prop="output" label="输出结果" ></el-table-column>
-                        <!-- <el-table-column prop="status" label="状态"  style="width: 50px;">
+                        <el-table-column prop="status" label="状态"  style="width: 50px;">
                             <template slot-scope="scope">
                                 <el-tag style="size:smaller"
                                 :type=" scope.row.status  === 'Complete' ? 'success' : 'primary'"
                                 disable-transitions>{{ scope.row.status }}</el-tag>
                             </template>
-                        </el-table-column> -->
+                        </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 

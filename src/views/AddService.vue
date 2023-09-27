@@ -7,8 +7,8 @@
                 </div>
                 <div style="margin-top: 10px; margin-left: 20px;">
                     <el-breadcrumb separator-class="el-icon-arrow-right">
-                        <el-breadcrumb-item :to="{ path: '/service' }">网络任务管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>创建网络任务</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/service' }">网络应用管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>创建网络应用</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
             </el-header>

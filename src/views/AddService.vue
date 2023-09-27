@@ -16,7 +16,7 @@
         <div class="interface">
             <el-card class="add-service">
                 <el-form ref="form" :model="form" label-width="180px" style="text-align: center;">
-                    <el-form-item label="网络名称">
+                    <el-form-item label="网络应用名称">
                         <el-input v-model="form.name" style="width: 900px;"></el-input>
                     </el-form-item>
                     <el-form-item label="容器标签">

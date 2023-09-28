@@ -265,7 +265,7 @@ export default {
         get_gpu_load(){
             var timestamp_end = Date.parse(new Date().toUTCString())/1000;
            
-            var timestamp_start = timestamp_end - 600
+            var timestamp_start = timestamp_end - 5
             var api = this.gpu_api+'api/v1/query_range?query=gpu_load&start='+timestamp_start+'&end='+timestamp_end+'&step=1'
            
             this.$http.get(api).then(res =>{
@@ -273,7 +273,7 @@ export default {
                 this.GPU_load_data = res.data.data.result[0].values
                
                     let tempData = [];
-                    for(var i = 0; i < this.GPU_load_data.length; i = i+60){
+                    for(var i = 0; i < this.GPU_load_data.length; i = i+5){
                     
                     let timestamp = this.GPU_load_data[i][0]
                   
@@ -287,8 +287,8 @@ export default {
                    
 
                     // 移除最旧的时间戳和对应的值
-                    if (this.GPU_load_data_time.length + tempData.length >= 10) {
-                        const numToRemove = this.GPU_load_data_time.length + tempData.length - 10;
+                    if (this.GPU_load_data_time.length > 10) {
+                        const numToRemove = this.GPU_load_data_time.length  - 10;
                         this.GPU_load_data_time.splice(0, numToRemove);
                         this.GPU_load_data_value.splice(0, numToRemove);
                     }

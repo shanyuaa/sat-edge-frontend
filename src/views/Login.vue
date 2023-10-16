@@ -31,39 +31,7 @@
         </el-form>
       </el-card>
 
-      <!-- TODO -->
-      <el-card class="NodeInfoCard-BMC">
-                <el-descriptions title="节点BMC信息">
-                <el-descriptions-item label="名称"></el-descriptions-item>
-                <el-descriptions-item label="主机IP"></el-descriptions-item>
-                <el-descriptions-item label="CPU架构"></el-descriptions-item>
-                <el-descriptions-item label="创建时间"></el-descriptions-item>
-                <el-descriptions-item label="操作系统"></el-descriptions-item>
-                <el-descriptions-item label="内存总量"></el-descriptions-item>
-                <el-descriptions-item label="内存使用量"></el-descriptions-item>
-                <el-descriptions-item label="内存使用率"></el-descriptions-item>
-                <el-descriptions-item label="磁盘总量"></el-descriptions-item>
-                <el-descriptions-item label="磁盘剩余量"></el-descriptions-item>
-                <el-descriptions-item label="磁盘使用率"></el-descriptions-item>
-                <el-descriptions-item label="CPU使用率"></el-descriptions-item>
-
-                
-                <!-- <el-descriptions-item label="GPU" v-if="nodeInfo.gpu">
-                    <el-tag style="size:smaller"
-                    :type=" nodeInfo.gpu  ? 'success' : 'danger'"
-                    disable-transitions>{{ nodeInfo.gpu ? '√': '×' }}</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="NPU" v-if="nodeInfo.npu">
-                    <el-tag style="size:smaller"
-                    :type=" nodeInfo.npu  ? 'success' : 'danger'"
-                    disable-transitions>{{ nodeInfo.npu ? '√':'×'}}</el-tag>
-                </el-descriptions-item> -->
-                
-            </el-descriptions>
-            <div>
-                <!-- <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button> -->
-            </div>
-            </el-card>
+      
     </div>
   </template>
   
@@ -121,15 +89,7 @@
     background-size:100% 100%;
   }
 
-  .NodeInfoCard1{
-  /* position: relative; */
-  width: 84%;
-  padding: 10px;
-  top:30px;
-  left:2%;
-  right: 2%;
-  margin-bottom:5%;
-}
+
 
   .login_card{
     width:28%;

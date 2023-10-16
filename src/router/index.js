@@ -174,18 +174,18 @@ const router = new Router({
 })
 
 
-// router.beforeEach((to, from, next) => {
-//   // 判断用户是否登录
-//   var isLoggedIn = ''/* 在这里判断用户是否登录，比如从 Vuex 状态中获取登录状态 */;
-//   isLoggedIn = sessionStorage.getItem('name')
-//   if (to.name !== 'login' && !isLoggedIn) {
-//     // 如果不是登录页面且用户未登录，则重定向到登录页面
-//     next('/login');
-//   } else {
-//     // this.$parent.ifLogin = true
-//     next(); // 继续导航
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  // 判断用户是否登录
+  var isLoggedIn = ''/* 在这里判断用户是否登录，比如从 Vuex 状态中获取登录状态 */;
+  isLoggedIn = sessionStorage.getItem('name')
+  if (to.name !== 'login' && !isLoggedIn) {
+    // 如果不是登录页面且用户未登录，则重定向到登录页面
+    next('/login');
+  } else {
+    // this.$parent.ifLogin = true
+    next(); // 继续导航
+  }
+})
 
 export default router;
 

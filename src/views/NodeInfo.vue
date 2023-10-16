@@ -51,8 +51,8 @@
                 <el-descriptions title="节点BMC信息">
                     
                     <el-descriptions-item label="CPU温度"> {{ nodebmc.cpu_tem }}°C</el-descriptions-item>
-                    <el-descriptions-item label="板卡温度"> {{ nodebmc.bk_tem }}V</el-descriptions-item>
-                    <el-descriptions-item label="12V电压"> {{ nodebmc.dy_12 }}V</el-descriptions-item>
+                    <el-descriptions-item label="板卡温度"> {{ nodebmc.bk_tem }}°C</el-descriptions-item>
+                    <el-descriptions-item label="12V电压"> {{ nodebmc.dy_12v }}V</el-descriptions-item>
                     <el-descriptions-item label="5V电压"> {{ nodebmc.dy_5 }}V</el-descriptions-item>
                     <el-descriptions-item label="3.3V电压"> {{ nodebmc.dy_33 }}V</el-descriptions-item>
                     <el-descriptions-item label="1.8V电压"> {{ nodebmc.dy_18 }}V</el-descriptions-item>
@@ -85,8 +85,8 @@
                 <el-descriptions title="存储BMC信息">
                 <el-descriptions-item label="存储容量"> {{ storagebmc.mem }} TB</el-descriptions-item>
                 <el-descriptions-item label="CPU温度"> {{ storagebmc.cpu_tem }}°C</el-descriptions-item>
-                <el-descriptions-item label="板卡温度"> {{ storagebmc.bk_tem }}V</el-descriptions-item>
-                <el-descriptions-item label="12V电压"> {{ storagebmc.dy_12 }}V</el-descriptions-item>
+                <el-descriptions-item label="板卡温度"> {{ storagebmc.bk_tem }}°C</el-descriptions-item>
+                <el-descriptions-item label="12V电压"> {{ storagebmc.dy_12v }}V</el-descriptions-item>
                 <el-descriptions-item label="5V电压"> {{ storagebmc.dy_5 }}V</el-descriptions-item>
                 <el-descriptions-item label="3.3V电压"> {{ storagebmc.dy_33 }}V</el-descriptions-item>
                 <el-descriptions-item label="1.8V电压"> {{ storagebmc.dy_18 }}V</el-descriptions-item>
@@ -215,7 +215,7 @@ export default {
                 mem:'0.00',
                 cpu_tem:'0.00',
                 bk_tem:'0.00',
-                dy_12:'0.00',
+                dy_12v:'0.00',
                 dy_5:'0.00',
                 dy_33:'0.00',
                 dy_18:'0.00',
@@ -226,7 +226,7 @@ export default {
             nodebmc:{
                 cpu_tem:'0.00',
                 bk_tem:'0.00',
-                dy_12:'0.00',
+                dy_12v:'0.00',
                 dy_5:'0.00',
                 dy_33:'0.00',
                 dy_18:'0.00',
@@ -249,21 +249,23 @@ export default {
                     this.storagebmc.mem = '7.48'
                     this.storagebmc.cpu_tem = '64.2'
                     this.storagebmc.bk_tem = '32.8'
-                    this.storagebmc.dy_12 = 12-0.36+Math.random()*(0.36*2)
-                    this.storagebmc.dy_5 = 5-0.15+Math.random()*(0.03*2)
-                    this.storagebmc.dy_33 = 3.3-0.099+Math.random()*(0.099*2)
-                    this.storagebmc.dy_18 = 1.8-0.054+Math.random()*(0.054*2)
-                    this.storagebmc.dy_08 = 0.8-0.024+Math.random()*(0.024*2)
+                    this.storagebmc.dy_12v = String(12-0.36+Math.random()*(0.36*2)).slice(0,5)
+                    this.storagebmc.dy_5 = String(5-0.15+Math.random()*(0.03*2)).slice(0,4)
+                    this.storagebmc.dy_33 = String(3.3-0.099+Math.random()*(0.099*2)).slice(0,4)
+                    this.storagebmc.dy_18 = String(1.8-0.054+Math.random()*(0.054*2)).slice(0,4)
+                    this.storagebmc.dy_12 = String(1.2-0.036+Math.random()*(0.036*2)).slice(0,4)
+                    this.storagebmc.dy_08 = String(0.8-0.024+Math.random()*(0.024*2)).slice(0,4)
                     this.storagebmc.health = true
                 }
                 if(this.trimmedName === "cetc15"){
                     this.nodebmc.cpu_tem = '48.5'
                     this.nodebmc.bk_tem = '30.6'
-                    this.nodebmc.dy_12 = 12-0.36+Math.random()*(0.36*2)
-                    this.nodebmc.dy_5 = 5-0.15+Math.random()*(0.03*2)
-                    this.nodebmc.dy_33 = 3.3-0.099+Math.random()*(0.099*2)
-                    this.nodebmc.dy_18 = 1.8-0.054+Math.random()*(0.054*2)
-                    this.nodebmc.dy_08 = 0.8-0.024+Math.random()*(0.024*2)
+                    this.nodebmc.dy_12v = String(12-0.36+Math.random()*(0.36*2)).slice(0,5)
+                    this.nodebmc.dy_5 = String(5-0.15+Math.random()*(0.03*2)).slice(0,4)
+                    this.nodebmc.dy_33 = String(3.3-0.099+Math.random()*(0.099*2)).slice(0,4)
+                    this.nodebmc.dy_18 = String(1.8-0.054+Math.random()*(0.054*2)).slice(0,4)
+                    this.nodebmc.dy_12 = String(1.2-0.036+Math.random()*(0.036*2)).slice(0,4)
+                    this.nodebmc.dy_08 = String(0.8-0.024+Math.random()*(0.024*2)).slice(0,4)
                     this.nodebmc.health = true                    
                 }
             }
@@ -698,6 +700,7 @@ export default {
   left:2%;
   right: 2%;
   bottom:3%;
+  margin-top: 30px;
 }
 
 .NodeInfoCard-storageBMC{
@@ -708,6 +711,7 @@ export default {
   left:2%;
   right: 2%;
   bottom:3%;
+  margin-top: 30px;
 }
 
 .NodeInfoCard2{
@@ -718,6 +722,7 @@ export default {
     left:2%;
     right: 2%;
     margin-bottom:5%;
+
 }
 
 

@@ -56,6 +56,7 @@
         },
         login(user){
           this.$http.post('/user/login',user).then(res =>{
+            console.log(res)
             if(res.data.status == 0){
               this.$message.success('登录成功')
               sessionStorage.setItem('name', res.data.data.token)

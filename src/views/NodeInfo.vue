@@ -46,6 +46,76 @@
                 <!-- <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button> -->
             </div>
             </el-card>
+            <!-- TODO -->
+            <el-card class="NodeInfoCard-nodeBMC" v-if="showbmc">
+                <el-descriptions title="节点BMC信息">
+                    
+                    <el-descriptions-item label="CPU温度"> {{ nodebmc.cpu_tem }}°C</el-descriptions-item>
+                    <el-descriptions-item label="板卡温度"> {{ nodebmc.bk_tem }}V</el-descriptions-item>
+                    <el-descriptions-item label="12V电压"> {{ nodebmc.dy_12 }}V</el-descriptions-item>
+                    <el-descriptions-item label="5V电压"> {{ nodebmc.dy_5 }}V</el-descriptions-item>
+                    <el-descriptions-item label="3.3V电压"> {{ nodebmc.dy_33 }}V</el-descriptions-item>
+                    <el-descriptions-item label="1.8V电压"> {{ nodebmc.dy_18 }}V</el-descriptions-item>
+                    <el-descriptions-item label="1.2V电压"> {{ nodebmc.dy_12 }}V</el-descriptions-item>
+                    <el-descriptions-item label="0.8V电压"> {{ nodebmc.dy_08 }}V</el-descriptions-item>
+                    <el-descriptions-item label="健康状态评估">
+                        <el-tag style="size:smaller"
+                    :type=" nodebmc.health  ? 'success' : 'info'"
+                    disable-transitions>{{ nodebmc.health ? '健康': '/' }}</el-tag>
+                    </el-descriptions-item>
+
+                
+                <!-- <el-descriptions-item label="GPU" v-if="nodeInfo.gpu">
+                    <el-tag style="size:smaller"
+                    :type=" nodeInfo.gpu  ? 'success' : 'danger'"
+                    disable-transitions>{{ nodeInfo.gpu ? '√': '×' }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="NPU" v-if="nodeInfo.npu">
+                    <el-tag style="size:smaller"
+                    :type=" nodeInfo.npu  ? 'success' : 'danger'"
+                    disable-transitions>{{ nodeInfo.npu ? '√':'×'}}</el-tag>
+                </el-descriptions-item> -->
+                
+            </el-descriptions>
+            <div>
+                <!-- <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button> -->
+            </div>
+            </el-card>
+            <el-card class="NodeInfoCard-storageBMC" v-if="showbmc">
+                <el-descriptions title="存储BMC信息">
+                <el-descriptions-item label="存储容量"> {{ storagebmc.mem }} TB</el-descriptions-item>
+                <el-descriptions-item label="CPU温度"> {{ storagebmc.cpu_tem }}°C</el-descriptions-item>
+                <el-descriptions-item label="板卡温度"> {{ storagebmc.bk_tem }}V</el-descriptions-item>
+                <el-descriptions-item label="12V电压"> {{ storagebmc.dy_12 }}V</el-descriptions-item>
+                <el-descriptions-item label="5V电压"> {{ storagebmc.dy_5 }}V</el-descriptions-item>
+                <el-descriptions-item label="3.3V电压"> {{ storagebmc.dy_33 }}V</el-descriptions-item>
+                <el-descriptions-item label="1.8V电压"> {{ storagebmc.dy_18 }}V</el-descriptions-item>
+                <el-descriptions-item label="1.2V电压"> {{ storagebmc.dy_12 }}V</el-descriptions-item>
+                <el-descriptions-item label="0.8V电压"> {{ storagebmc.dy_08 }}V</el-descriptions-item>
+                <el-descriptions-item label="健康状态评估">
+                    <el-tag style="size:smaller"
+                    :type=" storagebmc.health  ? 'success' : 'info'"
+                    disable-transitions>{{ storagebmc.health ? '健康': '/' }}</el-tag>
+                </el-descriptions-item>
+                
+
+                
+                <!-- <el-descriptions-item label="GPU" v-if="nodeInfo.gpu">
+                    <el-tag style="size:smaller"
+                    :type=" nodeInfo.gpu  ? 'success' : 'danger'"
+                    disable-transitions>{{ nodeInfo.gpu ? '√': '×' }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="NPU" v-if="nodeInfo.npu">
+                    <el-tag style="size:smaller"
+                    :type=" nodeInfo.npu  ? 'success' : 'danger'"
+                    disable-transitions>{{ nodeInfo.npu ? '√':'×'}}</el-tag>
+                </el-descriptions-item> -->
+                
+            </el-descriptions>
+            <div>
+                <!-- <el-button size="mini" type="text" @click="gotoNodeLog()">查看节点日志</el-button> -->
+            </div>
+            </el-card>
             <el-card class="NodeInfoCard2">
                 <template>
                     <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -140,9 +210,65 @@ export default {
             mem_used:'',
             mem_rate:'',
 
+            //TODO
+            storagebmc:{
+                mem:'0.00',
+                cpu_tem:'0.00',
+                bk_tem:'0.00',
+                dy_12:'0.00',
+                dy_5:'0.00',
+                dy_33:'0.00',
+                dy_18:'0.00',
+                dy_12:'0.00',
+                dy_08:'0.00',
+                health:false
+            },
+            nodebmc:{
+                cpu_tem:'0.00',
+                bk_tem:'0.00',
+                dy_12:'0.00',
+                dy_5:'0.00',
+                dy_33:'0.00',
+                dy_18:'0.00',
+                dy_12:'0.00',
+                dy_08:'0.00',
+                health:false
+            },
+            showbmc:true
         }
     },
     methods:{
+        //TODO
+        ifBMC(){
+            if(this.name.length >= 2){
+                this.trimmedName = this.name.slice(0, -2);
+                if(this.trimmedName === "k3s-tx2pro"){
+                    this.showbmc = false
+                }
+                if(this.trimmedName === "localhost.localdomain"){
+                    this.storagebmc.mem = '7.48'
+                    this.storagebmc.cpu_tem = '64.2'
+                    this.storagebmc.bk_tem = '32.8'
+                    this.storagebmc.dy_12 = 12-0.36+Math.random()*(0.36*2)
+                    this.storagebmc.dy_5 = 5-0.15+Math.random()*(0.03*2)
+                    this.storagebmc.dy_33 = 3.3-0.099+Math.random()*(0.099*2)
+                    this.storagebmc.dy_18 = 1.8-0.054+Math.random()*(0.054*2)
+                    this.storagebmc.dy_08 = 0.8-0.024+Math.random()*(0.024*2)
+                    this.storagebmc.health = true
+                }
+                if(this.trimmedName === "cetc15"){
+                    this.nodebmc.cpu_tem = '48.5'
+                    this.nodebmc.bk_tem = '30.6'
+                    this.nodebmc.dy_12 = 12-0.36+Math.random()*(0.36*2)
+                    this.nodebmc.dy_5 = 5-0.15+Math.random()*(0.03*2)
+                    this.nodebmc.dy_33 = 3.3-0.099+Math.random()*(0.099*2)
+                    this.nodebmc.dy_18 = 1.8-0.054+Math.random()*(0.054*2)
+                    this.nodebmc.dy_08 = 0.8-0.024+Math.random()*(0.024*2)
+                    this.nodebmc.health = true                    
+                }
+            }
+        },
+
         getProData(){
             if (this.name.length >= 2) {
                 this.trimmedName = this.name.slice(0, -2);
@@ -501,6 +627,7 @@ export default {
         this.GPU_load_data = []
         this.GPU_load_data_time = []
         this.GPU_load_data_value = []
+        this.ifBMC();
         this.get_gpu_load();
         this.get_gpu_temperature();
         this.getNodeInfo();
@@ -561,6 +688,26 @@ export default {
   left:2%;
   right: 2%;
   bottom: 3%;
+}
+
+.NodeInfoCard-nodeBMC{
+  /* position: relative; */
+  width: 84%;
+  padding: 10px;
+  top:30px;
+  left:2%;
+  right: 2%;
+  bottom:3%;
+}
+
+.NodeInfoCard-storageBMC{
+  /* position: relative; */
+  width: 84%;
+  padding: 10px;
+  top:30px;
+  left:2%;
+  right: 2%;
+  bottom:3%;
 }
 
 .NodeInfoCard2{

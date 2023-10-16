@@ -13,7 +13,7 @@ import axios from 'axios'
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts;
 
-axios.defaults.baseURL='http://k3s-sat.act.buaa.edu.cn/api'
+axios.defaults.baseURL='http://192.168.13.133:30001/api'
 Vue.prototype.$http = axios
 
 Vue.use(ElementUI);
